@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Bichuv Ombori</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🧵 Ombor Bo‘limi</h1>
+
+  <form id="omborForm">
+    <input type="date" id="sana" required>
+    <input type="text" id="klient" placeholder="Klient nomi" required>
+    <input type="text" id="partiya" placeholder="Partiya raqami" required>
+    <input type="text" id="mato" placeholder="Mato turi" required>
+    <input type="number" id="grammaj" placeholder="Grammaj" required>
+    <input type="number" id="eni" placeholder="Eni (sm)" required>
+    <input type="number" id="rulon" placeholder="Rulon soni" required>
+    <input type="number" id="brutto" placeholder="Brutto (kg)" required>
+    <input type="number" id="netto" placeholder="Netto (kg)" required>
+
+    <select id="bichuvNarx">
+      <option value="">Bichuv narxini tanlang</option>
+    </select>
+
+    <button type="submit">➕ Qo‘shish</button>
+  </form>
+
+  <table id="omborTable">
+    <thead>
+      <tr>
+        <th>Sana</th>
+        <th>Klient</th>
+        <th>Partiya</th>
+        <th>Mato</th>
+        <th>Grammaj</th>
+        <th>Eni</th>
+        <th>Rulon</th>
+        <th>Brutto</th>
+        <th>Netto</th>
+        <th>Bichuv narxi</th>
+        <th>Summa</th>
+        <th>Holat</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="app.js"></script>
+</body>
+</html>
