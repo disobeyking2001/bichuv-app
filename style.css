@@ -4,6 +4,16 @@ body {
   background: #f5f5f5;
 }
 
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+nav {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
 nav button {
   margin: 5px;
   padding: 10px 20px;
@@ -13,30 +23,68 @@ nav button {
   border-radius: 6px;
   cursor: pointer;
 }
-nav button:hover { background: #005fa3; }
 
-.page { display: none; }
-.page.active { display: block; }
+nav button:hover {
+  background: #005fa3;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+form {
+  margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+form input, form select, form button {
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+form button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #218838;
+}
+
+input#filterOmbor, input#filterBuyurtma, input#filterBichuv, input#filterKirim, input#filterHisobot {
+  width: 100%;
+  margin: 10px 0;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  margin-bottom: 20px;
 }
+
 th, td {
   border: 1px solid #ccc;
   padding: 6px;
   text-align: center;
 }
+
+tfoot td {
+  font-weight: bold;
+  background-color: #e9ecef;
+}
+
 tr.omborda { background-color: #fff; }
 tr.bichuvda { background-color: #fff3cd; }
 tr.topshirildi { background-color: #d4edda; }
-
-.filter {
-  margin-bottom: 10px;
-}
-.filter input {
-  padding: 5px;
-  width: 250px;
-}
-

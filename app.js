@@ -5,142 +5,103 @@ const bichuvNarxlar = {
   "Klient B": 1700,
   "Klient C": 1550
 };
-const select = document.getElementById("bichuvNarx");
-Object.keys(bichuvNarxlar).forEach(k=>{
+
+// Selectni to‘ldirish
+const bichuvSelect = document.getElementById("bichuvNarx");
+Object.keys(bichuvNarxlar).forEach(k => {
   const opt = document.createElement("option");
   opt.value = bichuvNarxlar[k];
   opt.textContent = `${k} - ${bichuvNarxlar[k]} so‘m/kg`;
-  select.appendChild(opt);
+  bichuvSelect.appendChild(opt);
 });
 
-// --- Saqlash ---
+// --- LocalStorage data ---
 let omborData = JSON.parse(localStorage.getItem("omborData") || "[]");
+let buyurtmaData = JSON.parse(localStorage.getItem("buyurtmaData") || "[]");
+let bichuvData = JSON.parse(localStorage.getItem("bichuvData") || "[]");
+let kirimData = JSON.parse(localStorage.getItem("kirimData") || "[]");
 
-// --- Sahifani boshqarish ---
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+// --- Page boshqarish ---
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  // Render qilish
+  if (id === 'ombor') renderOmborTable();
+  if (id === 'buyurtma') renderBuyurtmaTable();
+  if (id === 'bichuv') renderBichuvTable();
+  if (id === 'kirim') renderKirimTable();
+  if (id === 'hisobot') renderHisobotTable();
 }
-showPage('ombor');
+showPage('ombor'); // dastlab
 
-// --- Ombor ---
+// ----------------- OMBOR -----------------
 const omborForm = document.getElementById("omborForm");
-omborForm.addEventListener("submit", e=>{
+omborForm.addEventListener("submit", e => {
   e.preventDefault();
-  const sana=document.getElementById("sana").value;
-  const klient=document.getElementById("klient").value;
-  const partiya=document.getElementById("partiya").value;
-  const mato=document.getElementById("mato").value;
-  const grammaj=+document.getElementById("grammaj").value;
-  const eni=+document.getElementById("eni").value;
-  const rulon=+document.getElementById("rulon").value;
-  const brutto=+document.getElementById("brutto").value;
-  const netto=+document.getElementById("netto").value;
-  const bichuvNarx=+document.getElementById("bichuvNarx").value;
-  const summa=netto*bichuvNarx;
-  const row={sana,klient,partiya,mato,grammaj,eni,rulon,brutto,netto,bichuvNarx,summa,holat:"omborda"};
+  const sana = document.getElementById("sana").value;
+  const klient = document.getElementById("klient").value;
+  const partiya = document.getElementById("partiya").value;
+  const mato = document.getElementById("mato").value;
+  const grammaj = +document.getElementById("grammaj").value;
+  const eni = +document.getElementById("eni").value;
+  const rulon = +document.getElementById("rulon").value;
+  const brutto = +document.getElementById("brutto").value;
+  const netto = +document.getElementById("netto").value;
+  const bichuvNarx = +document.getElementById("bichuvNarx").value || 0;
+  const summa = netto * bichuvNarx;
+
+  const row = { sana, klient, partiya, mato, grammaj, eni, rulon, brutto, netto, bichuvNarx, summa, holat: "omborda" };
   omborData.push(row);
   localStorage.setItem("omborData", JSON.stringify(omborData));
-  renderOmborTable();
-  renderHisobotKirim();
-  renderHisobotHisob();
   omborForm.reset();
+  renderOmborTable();
 });
 
-function renderOmborTable(filter=""){
-  const tbody=document.querySelector("#omborTable tbody");
-  tbody.innerHTML="";
-  let totalNetto=0, totalSumma=0;
-  omborData.filter(r=> r.klient.toLowerCase().includes(filter) || r.partiya.toLowerCase().includes(filter))
-  .forEach((r,i)=>{
-    const tr=document.createElement("tr");
-    tr.classList.add(r.holat);
-    tr.innerHTML=`
-      <td>${r.sana}</td><td>${r.klient}</td><td>${r.partiya}</td><td>${r.mato}</td>
-      <td>${r.grammaj}</td><td>${r.eni}</td><td>${r.rulon}</td><td>${r.brutto}</td>
-      <td>${r.netto}</td><td>${r.bichuvNarx}</td><td>${r.summa.toLocaleString()}</td>
-      <td>
-        <select onchange="updateHolat(${i}, this.value)">
-          <option value="omborda" ${r.holat==='omborda'?'selected':''}>Omborda</option>
-          <option value="bichuvda" ${r.holat==='bichuvda'?'selected':''}>Bichuvda</option>
-          <option value="topshirildi" ${r.holat==='topshirildi'?'selected':''}>Topshirildi</option>
-        </select>
-      </td>`;
-    tbody.appendChild(tr);
-    totalNetto+=r.netto;
-    totalSumma+=r.summa;
-  });
-  document.getElementById("totalNetto").textContent=totalNetto;
-  document.getElementById("totalSumma").textContent=totalSumma.toLocaleString();
-}
-
-function updateHolat(i, holat){
-  omborData[i].holat=holat;
+function updateOmborHolat(i, val) {
+  omborData[i].holat = val;
   localStorage.setItem("omborData", JSON.stringify(omborData));
   renderOmborTable();
-  renderHisobotKirim();
-  renderHisobotHisob();
 }
 
-document.getElementById("filterOmbor").addEventListener("input", e=>{
-  renderOmborTable(e.target.value.toLowerCase());
-});
-
-// --- Hisobot ---
-function renderHisobotKirim(filter=""){
-  const tbody=document.querySelector("#hisobotKirimTable tbody");
-  tbody.innerHTML="";
-  let totalKg=0,totalSumma=0;
-  omborData.filter(r=> (r.holat==='topshirildi') && (r.klient.toLowerCase().includes(filter)||r.partiya.toLowerCase().includes(filter)))
-  .forEach(r=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${r.sana}</td><td>${r.klient}</td><td>${r.partiya}</td><td>${r.netto}</td><td>${r.summa.toLocaleString()}</td>`;
-    tbody.appendChild(tr);
-    totalKg+=r.netto;
-    totalSumma+=r.summa;
+function renderOmborTable() {
+  const tbody = document.querySelector("#omborTable tbody");
+  const filter = document.getElementById("filterOmbor").value.toLowerCase();
+  tbody.innerHTML = "";
+  let totalNetto = 0, totalSumma = 0;
+  omborData.forEach((row, i) => {
+    if (
+      row.klient.toLowerCase().includes(filter) ||
+      row.partiya.toLowerCase().includes(filter) ||
+      row.mato.toLowerCase().includes(filter)
+    ) {
+      const tr = document.createElement("tr");
+      tr.classList.add(row.holat);
+      tr.innerHTML = `
+        <td>${row.sana}</td>
+        <td>${row.klient}</td>
+        <td>${row.partiya}</td>
+        <td>${row.mato}</td>
+        <td>${row.grammaj}</td>
+        <td>${row.eni}</td>
+        <td>${row.rulon}</td>
+        <td>${row.brutto}</td>
+        <td>${row.netto}</td>
+        <td>${row.bichuvNarx}</td>
+        <td>${row.summa.toLocaleString()}</td>
+        <td>
+          <select onchange="updateOmborHolat(${i}, this.value)">
+            <option value='omborda' ${row.holat==='omborda'?'selected':''}>Omborda</option>
+            <option value='bichuvda' ${row.holat==='bichuvda'?'selected':''}>Bichuvda</option>
+            <option value='topshirildi' ${row.holat==='topshirildi'?'selected':''}>Topshirildi</option>
+          </select>
+        </td>`;
+      tbody.appendChild(tr);
+      totalNetto += row.netto;
+      totalSumma += row.summa;
+    }
   });
-  document.getElementById("totalKirimKg").textContent=totalKg;
-  document.getElementById("totalKirimSumma").textContent=totalSumma.toLocaleString();
-}
+  document.getElementById("totalNetto").textContent = totalNetto;
+  document.getElementById("tota
 
-function renderHisobotHisob(filter=""){
-  const tbody=document.querySelector("#hisobotHisobTable tbody");
-  tbody.innerHTML="";
-  let clients={};
-  omborData.filter(r=> r.holat==='topshirildi').forEach(r=>{
-    if(!clients[r.klient]) clients[r.klient]={kg:0,summa:0};
-    clients[r.klient].kg+=r.netto;
-    clients[r.klient].summa+=r.summa;
-  });
-  let totalKg=0,totalSumma=0,totalTolandi=0,totalQoldiq=0;
-  Object.keys(clients).filter(k=> k.toLowerCase().includes(filter)).forEach(k=>{
-    const c=clients[k];
-    const tolandi=0;
-    const qoldiq=c.summa-tolandi;
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${k}</td><td>${c.kg}</td><td>${c.summa.toLocaleString()}</td><td>${tolandi.toLocaleString()}</td><td>${qoldiq.toLocaleString()}</td>`;
-    tbody.appendChild(tr);
-    totalKg+=c.kg;
-    totalSumma+=c.summa;
-    totalTolandi+=tolandi;
-    totalQoldiq+=qoldiq;
-  });
-  document.getElementById("totalHisobKg").textContent=totalKg;
-  document.getElementById("totalHisobSumma").textContent=totalSumma.toLocaleString();
-  document.getElementById("totalHisobTolandi").textContent=totalTolandi.toLocaleString();
-  document.getElementById("totalHisobQoldiq").textContent=totalQoldiq.toLocaleString();
-}
-
-document.getElementById("filterHisobotKirim").addEventListener("input", e=>{
-  renderHisobotKirim(e.target.value.toLowerCase());
-});
-document.getElementById("filterHisobotHisob").addEventListener("input", e=>{
-  renderHisobotHisob(e.target.value.toLowerCase());
-});
-
-// --- Dastur ishga tushganda render ---
-renderOmborTable();
-renderHisobotKirim();
-renderHisobotHisob();
 
 
