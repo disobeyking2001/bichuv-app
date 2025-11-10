@@ -1,236 +1,252 @@
-// Wrap everything to avoid running before DOM loaded
-document.addEventListener('DOMContentLoaded', () => {
+// --- GLOBAL MA'LUMOTLAR ---
+let omborData = JSON.parse(localStorage.getItem('omborData')) || [];
+let buyurtmaData = JSON.parse(localStorage.getItem('buyurtmaData')) || [];
+let bichuvData = JSON.parse(localStorage.getItem('bichuvData')) || [];
+let kirimData = JSON.parse(localStorage.getItem('kirimData')) || [];
 
-  // ----------------- Storage keys -----------------
-  const CLIENTS_KEY = 'bb_clients_v1';
-  const FABRICS_KEY = 'bb_fabrics_v1';
-  const MODELS_KEY = 'bb_models_v1';
-  const OMBOR_DEMO_KEY = 'bb_ombor_demo_v1';
-  const BUYURTMA_DEMO_KEY = 'bb_buyurtma_demo_v1';
+// --- NOMLAR BAZASI ---
+let klientlar = JSON.parse(localStorage.getItem('klientlar')) || [];
+let matolar = JSON.parse(localStorage.getItem('matolar')) || [];
+let modellari = JSON.parse(localStorage.getItem('modellari')) || [];
+let modelNomerlar = JSON.parse(localStorage.getItem('modelNomerlar')) || [];
+let razmerlar = JSON.parse(localStorage.getItem('razmerlar')) || [];
 
-  // ----------------- Load helpers -----------------
-  function load(key){ try{ return JSON.parse(localStorage.getItem(key)) || [] }catch(e){ return [] } }
-  function save(key, arr){ localStorage.setItem(key, JSON.stringify(arr)) }
+// --- SAQLASH FUNKSIYASI ---
+function saveData() {
+  localStorage.setItem('omborData', JSON.stringify(omborData));
+  localStorage.setItem('buyurtmaData', JSON.stringify(buyurtmaData));
+  localStorage.setItem('bichuvData', JSON.stringify(bichuvData));
+  localStorage.setItem('kirimData', JSON.stringify(kirimData));
 
-  // ----------------- Data -----------------
-  let clients = load(CLIENTS_KEY);
-  let fabrics = load(FABRICS_KEY);
-  let models = load(MODELS_KEY);
-  let omborDemo = load(OMBOR_DEMO_KEY);
-  let buyurtmaDemo = load(BUYURTMA_DEMO_KEY);
+  localStorage.setItem('klientlar', JSON.stringify(klientlar));
+  localStorage.setItem('matolar', JSON.stringify(matolar));
+  localStorage.setItem('modellari', JSON.stringify(modellari));
+  localStorage.setItem('modelNomerlar', JSON.stringify(modelNomerlar));
+  localStorage.setItem('razmerlar', JSON.stringify(razmerlar));
+}
 
-  // ----------------- showPage global -----------------
-  window.showPage = function(id){
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const el = document.getElementById(id);
-    if(!el) return;
-    el.classList.add('active');
-    // render the active page so selects/tables update
-    renderAll();
+// --- SAHIFANI KO‘RSATISH ---
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+  document.getElementById(pageId).classList.remove('hidden');
+  if (pageId === 'hisobot') renderHisobotTable();
+}
+
+// --- SELECTLARNI YANGILASH ---
+function updateSelectOptions() {
+  const selects = {
+    klient: document.querySelectorAll('#klientSelect, #buyurtmaKlient, #bichuvKlient, #kirimKlient'),
+    mato: document.querySelectorAll('#matoSelect'),
+    model: document.querySelectorAll('#modelNomiSelect'),
+    modelNomer: document.querySelectorAll('#modelNomerSelect'),
+    razmer: document.querySelectorAll('#razmeriSelect')
   };
 
-  // Show initial page
-  showPage('clients');
+  for (let key in selects) {
+    selects[key].forEach(sel => {
+      const list = key === 'klient' ? klientlar :
+        key === 'mato' ? matolar :
+        key === 'model' ? modellari :
+        key === 'modelNomer' ? modelNomerlar : razmerlar;
 
-  // ----------------- Render functions -----------------
-  function renderAll(){
-    renderClientsTable();
-    renderFabricsTable();
-    renderModelsTable();
-    renderSelects();
-    renderOmborDemo();
-    renderBuyurtmaDemo();
-  }
-
-  // Clients
-  const clientsTbody = document.querySelector('#clientsTable tbody');
-  function renderClientsTable(){
-    clientsTbody.innerHTML = '';
-    clients.forEach((c, i) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(c.name)}</td><td>${escapeHtml(c.phone||'')}</td>
-        <td><button class="small" data-i="${i}" data-type="del-client">O'chirish</button></td>`;
-      clientsTbody.appendChild(tr);
+      sel.innerHTML = `<option value="">-- Tanlang --</option>`;
+      list.forEach(i => sel.innerHTML += `<option value="${i}">${i}</option>`);
     });
   }
+}
 
-  // Fabrics
-  const fabricsTbody = document.querySelector('#fabricsTable tbody');
-  function renderFabricsTable(){
-    fabricsTbody.innerHTML = '';
-    fabrics.forEach((f, i) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(f.name)}</td>
-        <td><button class="small" data-i="${i}" data-type="del-fabric">O'chirish</button></td>`;
-      fabricsTbody.appendChild(tr);
-    });
+// --- YANGI NOM QO‘SHISH (agar mavjud bo‘lmasa) ---
+function addToList(list, value) {
+  if (value && !list.includes(value)) {
+    list.push(value);
+    saveData();
+    updateSelectOptions();
   }
+}
 
-  // Models
-  const modelsTbody = document.querySelector('#modelsTable tbody');
-  function renderModelsTable(){
-    modelsTbody.innerHTML = '';
-    models.forEach((m, i) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.number)}</td><td>${escapeHtml(m.size||'')}</td>
-        <td><button class="small" data-i="${i}" data-type="del-model">O'chirish</button></td>`;
-      modelsTbody.appendChild(tr);
-    });
-  }
+// --- OMBOR FORM ---
+document.getElementById('omborForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const klient = document.getElementById('klientSelect').value;
+  const mato = document.getElementById('matoSelect').value;
+  const partiya = document.getElementById('partiya').value;
+  const netto = +document.getElementById('netto').value;
+  const narx = +document.getElementById('bichuvNarx').value;
+  const summa = netto * narx;
 
-  // Selects used in other forms
-  function renderSelects(){
-    // Helper to fill a select with options
-    function fill(selectEl, items, textFn){
-      selectEl.innerHTML = '<option value="">— tanlang —</option>';
-      items.forEach((it, idx) => {
-        const opt = document.createElement('option');
-        opt.value = idx; // index as value
-        opt.textContent = textFn(it);
-        selectEl.appendChild(opt);
-      });
-    }
-
-    // Clients in multiple selects
-    const clientText = c => c.name;
-    const selectClientForOmbor = document.getElementById('selectClientForOmbor');
-    const selectClientForBuyurtma = document.getElementById('selectClientForBuyurtma');
-    fill(selectClientForOmbor, clients, clientText);
-    fill(selectClientForBuyurtma, clients, clientText);
-
-    // Fabrics
-    const selectFabricForOmbor = document.getElementById('selectFabricForOmbor');
-    fill(selectFabricForOmbor, fabrics, f => f.name);
-
-    // Models
-    const selectModelForOmbor = document.getElementById('selectModelForOmbor');
-    const selectModelForBuyurtma = document.getElementById('selectModelForBuyurtma');
-    fill(selectModelForOmbor, models, m => `${m.name} (${m.number})`);
-    fill(selectModelForBuyurtma, models, m => `${m.name} (${m.number})`);
-  }
-
-  // Ombor demo table
-  const omborDemoTbody = document.querySelector('#omborDemoTable tbody');
-  function renderOmborDemo(){
-    omborDemoTbody.innerHTML = '';
-    omborDemo.forEach((r,i)=>{
-      const client = clients[r.clientIndex] ? clients[r.clientIndex].name : '—';
-      const fabric = fabrics[r.fabricIndex] ? fabrics[r.fabricIndex].name : '—';
-      const model = models[r.modelIndex] ? (models[r.modelIndex].name + ' / ' + models[r.modelIndex].number) : '—';
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(client)}</td><td>${escapeHtml(fabric)}</td><td>${escapeHtml(model)}</td><td>${r.netto||''}</td>`;
-      omborDemoTbody.appendChild(tr);
-    });
-  }
-
-  // Buyurtma demo
-  const buyurtmaDemoTbody = document.querySelector('#buyurtmaDemoTable tbody');
-  function renderBuyurtmaDemo(){
-    buyurtmaDemoTbody.innerHTML = '';
-    buyurtmaDemo.forEach((r,i)=>{
-      const client = clients[r.clientIndex] ? clients[r.clientIndex].name : '—';
-      const model = models[r.modelIndex] ? (models[r.modelIndex].name + ' / ' + models[r.modelIndex].number) : '—';
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(client)}</td><td>${escapeHtml(model)}</td><td>${r.qty||''}</td>`;
-      buyurtmaDemoTbody.appendChild(tr);
-    });
-  }
-
-  // ----------------- Forms handling -----------------
-
-  // Add client
-  document.getElementById('clientForm').addEventListener('submit', e=>{
-    e.preventDefault();
-    const name = (document.getElementById('clientName').value || '').trim();
-    const phone = (document.getElementById('clientPhone').value || '').trim();
-    if(!name){ alert('Klient nomi kiriting'); return; }
-    clients.push({ name, phone });
-    save(CLIENTS_KEY, clients);
-    document.getElementById('clientForm').reset();
-    renderAll();
+  omborData.push({
+    sana: document.getElementById('sana').value,
+    klient, partiya, mato,
+    gramm: +document.getElementById('grammaj').value,
+    eni: +document.getElementById('eni').value,
+    rulon: +document.getElementById('rulon').value,
+    brutto: +document.getElementById('brutto').value,
+    netto, narx, summa,
+    holat: "Omborda"
   });
 
-  // Add fabric
-  document.getElementById('fabricForm').addEventListener('submit', e=>{
-    e.preventDefault();
-    const name = (document.getElementById('fabricName').value || '').trim();
-    if(!name){ alert('Mato turi kiriting'); return; }
-    fabrics.push({ name });
-    save(FABRICS_KEY, fabrics);
-    document.getElementById('fabricForm').reset();
-    renderAll();
+  addToList(klientlar, klient);
+  addToList(matolar, mato);
+  saveData();
+  renderOmborTable();
+  e.target.reset();
+});
+
+// --- BUYURTMA FORM ---
+document.getElementById('buyurtmaForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const klient = document.getElementById('buyurtmaKlient').value;
+  const model = document.getElementById('modelNomiSelect').value;
+  const nomer = document.getElementById('modelNomerSelect').value;
+  const razmer = document.getElementById('razmeriSelect').value;
+  const partiya = document.getElementById('buyurtmaPartiya').value;
+
+  buyurtmaData.push({
+    sana: document.getElementById('buyurtmaSana').value,
+    klient,
+    nomerBuyurtma: document.getElementById('buyurtmaNomer').value,
+    partiya,
+    model, nomer, razmer,
+    kg: +document.getElementById('buyurtmaKg').value,
+    soni: +document.getElementById('buyurtmaSon').value,
+    holat: "Jarayonda"
   });
 
-  // Add model
-  document.getElementById('modelForm').addEventListener('submit', e=>{
-    e.preventDefault();
-    const name = (document.getElementById('modelName').value || '').trim();
-    const number = (document.getElementById('modelNumber').value || '').trim();
-    const size = (document.getElementById('modelSize').value || '').trim();
-    if(!name || !number){ alert('Model nomi va nomerini kiriting'); return; }
-    models.push({ name, number, size });
-    save(MODELS_KEY, models);
-    document.getElementById('modelForm').reset();
-    renderAll();
+  addToList(klientlar, klient);
+  addToList(modellari, model);
+  addToList(modelNomerlar, nomer);
+  addToList(razmerlar, razmer);
+  saveData();
+  renderBuyurtmaTable();
+  e.target.reset();
+});
+
+// --- BICHUV FORM ---
+document.getElementById('bichuvForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const buyurtma = document.getElementById('bichuvBuyurtmaNomer').value;
+  const partiya = document.getElementById('bichuvPartiya').value;
+  const klient = document.getElementById('bichuvKlient').value;
+
+  bichuvData.push({
+    sana: document.getElementById('bichuvSana').value,
+    buyurtma, partiya, klient,
+    kg: +document.getElementById('bichuvKg').value,
+    soni: +document.getElementById('bichuvSon').value,
+    holat: "Topshirildi"
   });
 
-  // Ombor demo submit
-  document.getElementById('omborDemoForm').addEventListener('submit', e=>{
-    e.preventDefault();
-    const clientIndex = document.getElementById('selectClientForOmbor').value;
-    const fabricIndex = document.getElementById('selectFabricForOmbor').value;
-    const modelIndex = document.getElementById('selectModelForOmbor').value;
-    const netto = +document.getElementById('demoNetto').value || 0;
-    if(clientIndex === '' || fabricIndex === '' ){ alert('Klient va Mato tanlang'); return; }
-    omborDemo.push({ clientIndex:+clientIndex, fabricIndex:+fabricIndex, modelIndex: modelIndex===''?null:+modelIndex, netto });
-    save(OMBOR_DEMO_KEY, omborDemo);
-    document.getElementById('omborDemoForm').reset();
-    renderAll();
+  saveData();
+  updateHolat(partiya);
+  renderBichuvTable();
+  renderOmborTable();
+  renderBuyurtmaTable();
+  e.target.reset();
+});
+
+// --- KIRIM FORM ---
+document.getElementById('kirimForm').addEventListener('submit', e => {
+  e.preventDefault();
+  kirimData.push({
+    sana: document.getElementById('kirimSana').value,
+    klient: document.getElementById('kirimKlient').value,
+    partiya: document.getElementById('kirimPartiya').value,
+    summa: +document.getElementById('kirimSumma').value
+  });
+  saveData();
+  renderKirimTable();
+  e.target.reset();
+});
+
+// --- HOLAT YANGILASH ---
+function updateHolat(partiya) {
+  omborData.forEach(o => {
+    if (o.partiya === partiya) o.holat = "Bichuvda";
+  });
+  buyurtmaData.forEach(b => {
+    if (b.partiya === partiya) b.holat = "Bichuvda";
+  });
+  saveData();
+}
+
+// --- JADVALLARNI CHIZISH ---
+function renderOmborTable() {
+  const tbody = document.querySelector('#omborTable tbody');
+  tbody.innerHTML = "";
+  omborData.forEach(o => {
+    tbody.innerHTML += `<tr>
+      <td>${o.sana}</td><td>${o.klient}</td><td>${o.partiya}</td><td>${o.mato}</td>
+      <td>${o.gramm}</td><td>${o.eni}</td><td>${o.rulon}</td><td>${o.brutto}</td>
+      <td>${o.netto}</td><td>${o.narx}</td><td>${o.summa}</td><td>${o.holat}</td>
+    </tr>`;
+  });
+}
+
+function renderBuyurtmaTable() {
+  const tbody = document.querySelector('#buyurtmaTable tbody');
+  tbody.innerHTML = "";
+  buyurtmaData.forEach(b => {
+    tbody.innerHTML += `<tr>
+      <td>${b.sana}</td><td>${b.klient}</td><td>${b.nomerBuyurtma}</td><td>${b.partiya}</td>
+      <td>${b.model}</td><td>${b.nomer}</td><td>${b.razmer}</td><td>${b.kg}</td>
+      <td>${b.soni}</td><td>${b.holat}</td>
+    </tr>`;
+  });
+}
+
+function renderBichuvTable() {
+  const tbody = document.querySelector('#bichuvTable tbody');
+  tbody.innerHTML = "";
+  bichuvData.forEach(b => {
+    tbody.innerHTML += `<tr>
+      <td>${b.sana}</td><td>${b.buyurtma}</td><td>${b.partiya}</td><td>${b.klient}</td>
+      <td>${b.kg}</td><td>${b.soni}</td><td>${b.holat}</td>
+    </tr>`;
+  });
+}
+
+function renderKirimTable() {
+  const tbody = document.querySelector('#kirimTable tbody');
+  tbody.innerHTML = "";
+  kirimData.forEach(k => {
+    tbody.innerHTML += `<tr>
+      <td>${k.sana}</td><td>${k.klient}</td><td>${k.partiya}</td><td>${k.summa}</td>
+    </tr>`;
+  });
+}
+
+function renderHisobotTable() {
+  const tbody = document.querySelector('#hisobotTable tbody');
+  tbody.innerHTML = "";
+  const hisobot = {};
+
+  omborData.forEach(o => {
+    if (!hisobot[o.klient]) hisobot[o.klient] = { kg: 0, summa: 0, tolandi: 0 };
+    hisobot[o.klient].kg += o.netto;
+    hisobot[o.klient].summa += o.summa;
   });
 
-  // Buyurtma demo submit
-  document.getElementById('buyurtmaDemoForm').addEventListener('submit', e=>{
-    e.preventDefault();
-    const clientIndex = document.getElementById('selectClientForBuyurtma').value;
-    const modelIndex = document.getElementById('selectModelForBuyurtma').value;
-    const qty = +document.getElementById('demoOrderQty').value || 0;
-    if(clientIndex === '' || modelIndex === '' || qty<=0){ alert('Klient, model va miqdor kiriting'); return; }
-    buyurtmaDemo.push({ clientIndex:+clientIndex, modelIndex:+modelIndex, qty });
-    save(BUYURTMA_DEMO_KEY, buyurtmaDemo);
-    document.getElementById('buyurtmaDemoForm').reset();
-    renderAll();
+  kirimData.forEach(k => {
+    if (!hisobot[k.klient]) hisobot[k.klient] = { kg: 0, summa: 0, tolandi: 0 };
+    hisobot[k.klient].tolandi += k.summa;
   });
 
-  // ----------------- Table actions (delete) -----------------
-  document.body.addEventListener('click', (ev)=>{
-    const btn = ev.target.closest('button[data-type]');
-    if(!btn) return;
-    const idx = Number(btn.dataset.i);
-    const type = btn.dataset.type;
-    if(type === 'del-client'){
-      if(!confirm('Klientni o‘chirilsinmi?')) return;
-      clients.splice(idx,1); save(CLIENTS_KEY, clients); renderAll();
-    }
-    if(type === 'del-fabric'){
-      if(!confirm('Matoni o‘chirilsinmi?')) return;
-      fabrics.splice(idx,1); save(FABRICS_KEY, fabrics); renderAll();
-    }
-    if(type === 'del-model'){
-      if(!confirm('Modelni o‘chirilsinmi?')) return;
-      models.splice(idx,1); save(MODELS_KEY, models); renderAll();
-    }
-  });
-
-  // ----------------- Utilities -----------------
-  function escapeHtml(str){
-    if(!str && str!==0) return '';
-    return String(str).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  for (let k in hisobot) {
+    const h = hisobot[k];
+    const qoldiq = h.summa - h.tolandi;
+    tbody.innerHTML += `<tr>
+      <td>${k}</td><td>${h.kg}</td><td>${h.summa}</td><td>${h.tolandi}</td><td>${qoldiq}</td>
+    </tr>`;
   }
+}
 
-  // Initial render
-  renderAll();
+// --- YUKLASHDA ISHLAYDI ---
+updateSelectOptions();
+renderOmborTable();
+renderBuyurtmaTable();
+renderBichuvTable();
+renderKirimTable();
 
-}); // DOMContentLoaded end
 
 
 

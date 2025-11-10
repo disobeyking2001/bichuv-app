@@ -1,107 +1,126 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Bichuv — Boshlang'ich baza</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bichuv Bo‘limi Dasturi</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Bichuv — Boshlang'ich baza</h1>
-
+  <h1>Bichuv Bo‘limi Dasturi</h1>
   <nav>
-    <button onclick="showPage('clients')">👥 Klientlar</button>
-    <button onclick="showPage('fabrics')">🧵 Mato turlari</button>
-    <button onclick="showPage('models')">👗 Model bazasi</button>
-    <button onclick="showPage('ombor')">🏬 Ombor (demo)</button>
-    <button onclick="showPage('buyurtma')">📋 Buyurtma (demo)</button>
+    <button onclick="showPage('ombor')">🧵 Ombor</button>
+    <button onclick="showPage('buyurtma')">📋 Buyurtma</button>
+    <button onclick="showPage('bichuv')">✂️ Bichuv</button>
+    <button onclick="showPage('kirim')">💰 Kirim</button>
+    <button onclick="showPage('hisobot')">📊 Hisobot</button>
   </nav>
 
-  <!-- Clients -->
-  <section id="clients" class="page">
-    <h2>Klientlar</h2>
-    <form id="clientForm">
-      <input type="text" id="clientName" placeholder="Klient nomi" required />
-      <input type="text" id="clientPhone" placeholder="Telefon (ixtiyoriy)" />
-      <button type="submit">Klient qo'shish</button>
-    </form>
-
-    <table id="clientsTable">
-      <thead><tr><th>#</th><th>Klient</th><th>Telefon</th><th>O'chirish</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </section>
-
-  <!-- Fabrics -->
-  <section id="fabrics" class="page">
-    <h2>Mato turlari</h2>
-    <form id="fabricForm">
-      <input type="text" id="fabricName" placeholder="Mato turi (masalan: paxta, trikotaj)" required />
-      <button type="submit">Mato qo'shish</button>
-    </form>
-
-    <table id="fabricsTable">
-      <thead><tr><th>#</th><th>Mato turi</th><th>O'chirish</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </section>
-
-  <!-- Models -->
-  <section id="models" class="page">
-    <h2>Model bazasi</h2>
-    <form id="modelForm">
-      <input type="text" id="modelName" placeholder="Model nomi" required />
-      <input type="text" id="modelNumber" placeholder="Model nomeri" required />
-      <input type="text" id="modelSize" placeholder="Razmeri" />
-      <button type="submit">Model qo'shish</button>
-    </form>
-
-    <table id="modelsTable">
-      <thead><tr><th>#</th><th>Model nomi</th><th>Model nomeri</th><th>Razmer</th><th>O'chirish</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </section>
-
-  <!-- Ombor (demo — select bilan ishlashni ko'rsatadi) -->
+  <!-- Ombor -->
   <section id="ombor" class="page">
-    <h2>Ombor (demo)</h2>
-    <p>Bu sahifa selectlar orqali klient va matoni tanlashni ko‘rsatadi.</p>
-    <form id="omborDemoForm">
-      <label>Klient:
-        <select id="selectClientForOmbor"><option value="">— tanlang —</option></select>
-      </label>
-      <label>Mato:
-        <select id="selectFabricForOmbor"><option value="">— tanlang —</option></select>
-      </label>
-      <label>Model:
-        <select id="selectModelForOmbor"><option value="">— tanlang —</option></select>
-      </label>
-      <input type="number" id="demoNetto" placeholder="Netto (kg)" />
-      <button type="submit">Demo qo'shish</button>
+    <h2>Ombor</h2>
+    <form id="omborForm">
+      <input type="date" id="sana" required>
+      <select id="klientSelect"></select>
+      <input type="text" id="partiya" placeholder="Partiya raqami" required>
+      <select id="matoSelect"></select>
+      <input type="number" id="grammaj" placeholder="Grammaj" required>
+      <input type="number" id="eni" placeholder="Eni" required>
+      <input type="number" id="rulon" placeholder="Rulon soni" required>
+      <input type="number" id="brutto" placeholder="Brutto" required>
+      <input type="number" id="netto" placeholder="Netto" required>
+      <input type="number" id="bichuvNarx" placeholder="Narx" required>
+      <button type="submit">Qo‘shish</button>
     </form>
-
-    <table id="omborDemoTable">
-      <thead><tr><th>#</th><th>Klient</th><th>Mato</th><th>Model</th><th>Netto</th></tr></thead>
+    <input type="text" id="filterOmbor" placeholder="Filter..." oninput="renderOmborTable()">
+    <table id="omborTable">
+      <thead>
+        <tr>
+          <th>Sana</th><th>Klient</th><th>Partiya</th><th>Mato</th><th>Grammaj</th>
+          <th>Eni</th><th>Rulon</th><th>Brutto</th><th>Netto</th><th>Narx</th><th>Summa</th><th>Holat</th>
+        </tr>
+      </thead>
       <tbody></tbody>
     </table>
   </section>
 
-  <!-- Buyurtma (demo) -->
-  <section id="buyurtma" class="page">
-    <h2>Buyurtma (demo)</h2>
-    <form id="buyurtmaDemoForm">
-      <label>Klient:
-        <select id="selectClientForBuyurtma"><option value="">— tanlang —</option></select>
-      </label>
-      <label>Model:
-        <select id="selectModelForBuyurtma"><option value="">— tanlang —</option></select>
-      </label>
-      <input type="number" id="demoOrderQty" placeholder="Buyurtma soni" />
-      <button type="submit">Buyurtma qo'shish</button>
+  <!-- Buyurtma -->
+  <section id="buyurtma" class="page hidden">
+    <h2>Buyurtmalar</h2>
+    <form id="buyurtmaForm">
+      <input type="date" id="buyurtmaSana" required>
+      <select id="buyurtmaKlient"></select>
+      <input type="text" id="buyurtmaNomer" placeholder="Buyurtma nomeri" required>
+      <input type="text" id="buyurtmaPartiya" placeholder="Partiya raqami" required>
+      <select id="modelNomiSelect"></select>
+      <select id="modelNomerSelect"></select>
+      <select id="razmeriSelect"></select>
+      <input type="number" id="buyurtmaKg" placeholder="Kg" required>
+      <input type="number" id="buyurtmaSon" placeholder="Buyurtma soni" required>
+      <button type="submit">Qo‘shish</button>
     </form>
+    <table id="buyurtmaTable">
+      <thead>
+        <tr>
+          <th>Sana</th><th>Klient</th><th>Buyurtma #</th><th>Partiya</th>
+          <th>Model</th><th>Nomeri</th><th>Razmeri</th><th>Kg</th><th>Soni</th><th>Holat</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
 
-    <table id="buyurtmaDemoTable">
-      <thead><tr><th>#</th><th>Klient</th><th>Model</th><th>Soni</th></tr></thead>
+  <!-- Bichuv -->
+  <section id="bichuv" class="page hidden">
+    <h2>Bichuv Bo‘limi</h2>
+    <form id="bichuvForm">
+      <input type="date" id="bichuvSana" required>
+      <select id="bichuvBuyurtmaNomer"></select>
+      <select id="bichuvPartiya"></select>
+      <select id="bichuvKlient"></select>
+      <input type="number" id="bichuvKg" placeholder="Kg" required>
+      <input type="number" id="bichuvSon" placeholder="Bichuv soni" required>
+      <button type="submit">Qo‘shish</button>
+    </form>
+    <table id="bichuvTable">
+      <thead>
+        <tr>
+          <th>Sana</th><th>Buyurtma</th><th>Partiya</th><th>Klient</th><th>Kg</th><th>Soni</th><th>Holat</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- Kirim -->
+  <section id="kirim" class="page hidden">
+    <h2>Kirim (To‘lovlar)</h2>
+    <form id="kirimForm">
+      <input type="date" id="kirimSana" required>
+      <select id="kirimKlient"></select>
+      <select id="kirimPartiya"></select>
+      <input type="number" id="kirimSumma" placeholder="Summa" required>
+      <button type="submit">Kirim Qilish</button>
+    </form>
+    <table id="kirimTable">
+      <thead>
+        <tr>
+          <th>Sana</th><th>Klient</th><th>Partiya</th><th>Summa</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- Hisobot -->
+  <section id="hisobot" class="page hidden">
+    <h2>Hisobot</h2>
+    <table id="hisobotTable">
+      <thead>
+        <tr>
+          <th>Klient</th><th>Jami kg</th><th>Summa</th><th>To‘landi</th><th>Qoldiq</th>
+        </tr>
+      </thead>
       <tbody></tbody>
     </table>
   </section>
@@ -109,5 +128,6 @@
   <script src="app.js"></script>
 </body>
 </html>
+
 
 
