@@ -101,7 +101,158 @@ function renderOmborTable() {
     }
   });
   document.getElementById("totalNetto").textContent = totalNetto;
-  document.getElementById("tota
+  document.getElementById("totalSumma").textContent = totalSumma.toLocaleString();
+}
+
+// ----------------- BUYURTMA -----------------
+const buyurtmaForm = document.getElementById("buyurtmaForm");
+buyurtmaForm.addEventListener("submit", e => {
+  e.preventDefault();
+  const sana = document.getElementById("buyurtmaSana").value;
+  const klient = document.getElementById("buyurtmaKlient").value;
+  const partiya = document.getElementById("buyurtmaPartiya").value;
+  const modelNomi = document.getElementById("modelNomi").value;
+  const modelNomer = document.getElementById("modelNomer").value;
+  const razmeri = document.getElementById("razmeri").value;
+  const kg = +document.getElementById("kg").value;
+  const buyurtmaSon = +document.getElementById("buyurtmaSon").value;
+  const bichilgan = bichuvData.filter(b=>b.buyurtmaNomer===modelNomer).reduce((s,a)=>s+a.bichuvSon,0);
+  const farqi = buyurtmaSon - bichilgan;
+  const holat = bichilgan>0?'bichuvda':'omborda';
+  buyurtmaData.push({sana, klient, partiya, modelNomi, modelNomer, razmeri, kg, buyurtmaSon, bichilgan, farqi, holat});
+  localStorage.setItem("buyurtmaData", JSON.stringify(buyurtmaData));
+  buyurtmaForm.reset();
+  renderBuyurtmaTable();
+});
+
+function renderBuyurtmaTable() {
+  const tbody = document.querySelector("#buyurtmaTable tbody");
+  const filter = document.getElementById("filterBuyurtma").value.toLowerCase();
+  tbody.innerHTML = "";
+  let totalKg=0, totalBuyurtmaSon=0, totalBichilgan=0, totalFarqi=0;
+  buyurtmaData.forEach(row=>{
+    if (row.klient.toLowerCase().includes(filter) || row.partiya.toLowerCase().includes(filter) || row.modelNomi.toLowerCase().includes(filter)) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${row.sana}</td><td>${row.klient}</td><td>${row.partiya}</td>
+        <td>${row.modelNomi}</td><td>${row.modelNomer}</td><td>${row.razmeri}</td>
+        <td>${row.kg}</td><td>${row.buyurtmaSon}</td>
+        <td>${row.bichilgan}</td><td>${row.farqi}</td><td>${row.holat}</td>`;
+      tbody.appendChild(tr);
+      totalKg+=row.kg;
+      totalBuyurtmaSon+=row.buyurtmaSon;
+      totalBichilgan+=row.bichilgan;
+      totalFarqi+=row.farqi;
+    }
+  });
+  document.getElementById("totalKg").textContent=totalKg;
+  document.getElementById("totalBuyurtmaSon").textContent=totalBuyurtmaSon;
+  document.getElementById("totalBichilgan").textContent=totalBichilgan;
+  document.getElementById("totalFarqi").textContent=totalFarqi;
+}
+
+// ----------------- BICHUV -----------------
+const bichuvForm = document.getElementById("bichuvForm");
+bichuvForm.addEventListener("submit", e=>{
+  e.preventDefault();
+  const sana=document.getElementById("bichuvSana").value;
+  const buyurtmaNomer=document.getElementById("bichuvBuyurtma").value;
+  const klient=document.getElementById("bichuvKlient").value;
+  const partiya=document.getElementById("bichuvPartiya").value;
+  const modelNomi=document.getElementById("bichuvModelNomi").value;
+  const modelNomer=document.getElementById("bichuvModelNomer").value;
+  const razmeri=+document.getElementById("bichuvRazmeri").value;
+  const kg=+document.getElementById("bichuvKg").value;
+  const bichuvSon=+document.getElementById("bichuvSon").value;
+  const holat="topshirildi";
+  bichuvData.push({sana,buyurtmaNomer,klient,partiya,modelNomi,modelNomer,razmeri,kg,bichuvSon,holat});
+  localStorage.setItem("bichuvData",JSON.stringify(bichuvData));
+  bichuvForm.reset();
+  renderBichuvTable();
+});
+
+function renderBichuvTable(){
+  const tbody=document.querySelector("#bichuvTable tbody");
+  const filter=document.getElementById("filterBichuv").value.toLowerCase();
+  tbody.innerHTML="";
+  let totalKg=0,totalSon=0;
+  bichuvData.forEach(row=>{
+    if(row.klient.toLowerCase().includes(filter)||row.partiya.toLowerCase().includes(filter)||row.modelNomi.toLowerCase().includes(filter)){
+      const tr=document.createElement("tr");
+      tr.classList.add(row.holat);
+      tr.innerHTML=`
+        <td>${row.sana}</td><td>${row.buyurtmaNomer}</td><td>${row.klient}</td><td>${row.partiya}</td>
+        <td>${row.modelNomi}</td><td>${row.modelNomer}</td><td>${row.razmeri}</td><td>${row.kg}</td><td>${row.bichuvSon}</td>
+        <td>${row.holat}</td>`;
+      tbody.appendChild(tr);
+      totalKg+=row.kg;
+      totalSon+=row.bichuvSon;
+    }
+  });
+  document.getElementById("totalBichuvKg").textContent=totalKg;
+  document.getElementById("totalBichuvSon").textContent=totalSon;
+}
+
+// ----------------- KIRIM -----------------
+const kirimForm=document.getElementById("kirimForm");
+kirimForm.addEventListener("submit",e=>{
+  e.preventDefault();
+  const sana=document.getElementById("kirimSana").value;
+  const klient=document.getElementById("kirimKlient").value;
+  const partiya=document.getElementById("kirimPartiya").value;
+  const summa=+document.getElementById("kirimSumma").value;
+  kirimData.push({sana,klient,partiya,summa});
+  localStorage.setItem("kirimData",JSON.stringify(kirimData));
+  kirimForm.reset();
+  renderKirimTable();
+});
+
+function renderKirimTable(){
+  const tbody=document.querySelector("#kirimTable tbody");
+  const filter=document.getElementById("filterKirim").value.toLowerCase();
+  tbody.innerHTML="";
+  let total=0;
+  kirimData.forEach(row=>{
+    if(row.klient.toLowerCase().includes(filter)||row.partiya.toLowerCase().includes(filter)){
+      const tr=document.createElement("tr");
+      tr.innerHTML=`<td>${row.sana}</td><td>${row.klient}</td><td>${row.partiya}</td><td>${row.summa}</td>`;
+      tbody.appendChild(tr);
+      total+=row.summa;
+    }
+  });
+  document.getElementById("totalKirim").textContent=total.toLocaleString();
+}
+
+// ----------------- HISOBOT -----------------
+function renderHisobotTable(){
+  const tbody=document.querySelector("#hisobotTable tbody");
+  const filter=document.getElementById("filterHisobot").value.toLowerCase();
+  tbody.innerHTML="";
+  let totalKg=0,totalSumma=0,totalTolandi=0,totalQoldiq=0;
+
+  // Klientlar ro'yxatini yaratish
+  const klientlar=[...new Set(omborData.map(o=>o.klient))];
+
+  klientlar.forEach(k=>{
+    if(!k.toLowerCase().includes(filter)) return;
+    const kg=omborData.filter(o=>o.klient===k && o.holat==='topshirildi').reduce((s,a)=>s+a.netto,0);
+    const summa=omborData.filter(o=>o.klient===k && o.holat==='topshirildi').reduce((s,a)=>s+a.summa,0);
+    const tolandi=kirimData.filter(c=>c.klient===k).reduce((s,a)=>s+a.summa,0);
+    const qoldiq=summa-tolandi;
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${k}</td><td>${kg}</td><td>${summa.toLocaleString()}</td><td>${tolandi.toLocaleString()}</td><td>${qoldiq.toLocaleString()}</td>`;
+    tbody.appendChild(tr);
+    totalKg+=kg;
+    totalSumma+=summa;
+    totalTolandi+=tolandi;
+    totalQoldiq+=qoldiq;
+  });
+
+  document.getElementById("totalHisobotKg").textContent=totalKg;
+  document.getElementById("totalHisobotSumma").textContent=totalSumma.toLocaleString();
+  document.getElementById("totalHisobotTolandi").textContent=totalTolandi.toLocaleString();
+  document.getElementById("totalHisobotQoldiq").textContent=totalQoldiq.toLocaleString();
+}
 
 
 
