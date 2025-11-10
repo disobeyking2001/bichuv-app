@@ -1,14 +1,46 @@
-body { font-family: Arial, sans-serif; padding: 20px; background: #f7f7f7; }
-h1 { text-align: center; }
-nav { text-align: center; margin-bottom: 20px; }
-nav button { margin: 0 5px; padding: 5px 10px; cursor: pointer; }
-.page { display: none; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+body {
+  font-family: Calibri, sans-serif;
+  padding: 20px;
+  background: #f5f5f5;
+}
+
+nav button {
+  margin: 5px;
+  padding: 10px 20px;
+  border: none;
+  background: #0078d7;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+nav button:hover {
+  background: #005fa3;
+}
+
+.page { display: none; }
 .page.active { display: block; }
-form { margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
-form input, form select, form button { padding: 5px; }
-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-table, th, td { border: 1px solid #ccc; }
-th, td { padding: 5px; text-align: center; }
-tfoot td { font-weight: bold; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: center;
+}
+
+tr.omborda { background-color: #fff; }
+tr.bichuvda { background-color: #fff3cd; }
+tr.topshirildi { background-color: #d4edda; }
+
 .hidden { display: none; }
+
+tfoot td {
+  font-weight: bold;
+}
+
 
