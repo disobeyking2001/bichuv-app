@@ -61,32 +61,25 @@
   <section id="buyurtma" class="page hidden">
     <h2>Buyurtmalar</h2>
     <div class="filter">
-      <input type="text" id="filterBuyurtma" placeholder="Klient yoki Model bo‘yicha filter...">
+      <input type="text" id="filterBuyurtma" placeholder="Klient yoki Partiya bo‘yicha filter...">
     </div>
-    <form id="buyurtmaForm">
-      <input type="date" id="buyurtmaSana" required>
-      <input type="text" id="buyurtmaKlient" placeholder="Klient" required>
-      <input type="text" id="buyurtmaPartiya" placeholder="Partiya raqami" required>
-      <input type="text" id="buyurtmaModel" placeholder="Model nomi" required>
-      <input type="text" id="buyurtmaRazmer" placeholder="Razmer" required>
-      <input type="number" id="buyurtmaSon" placeholder="Buyurtma soni" required>
-      <button type="submit">Qo‘shish</button>
-    </form>
-
     <table id="buyurtmaTable">
       <thead>
         <tr>
-          <th>Sanasi</th><th>Klient</th><th>Partiya</th><th>Model</th>
-          <th>Razmer</th><th>Buyurtma Soni</th><th>Bichilgan</th><th>Farq</th>
+          <th>Sanasi</th><th>Klient</th><th>Partiya</th><th>Buyurtma №</th>
+          <th>Model</th><th>Razmeri</th><th>Mato</th><th>Grammaj</th><th>Eni</th>
+          <th>Kg</th><th>Buyurtma soni</th><th>Bichilgan soni</th><th>Farqi</th><th>Holat</th>
         </tr>
       </thead>
       <tbody></tbody>
       <tfoot>
         <tr>
-          <td colspan="5">Total:</td>
-          <td id="totalBuyurtma">0</td>
-          <td id="totalBichilgan">0</td>
-          <td id="totalFarq">0</td>
+          <td colspan="9">Total:</td>
+          <td id="totalBuyurtmaKg">0</td>
+          <td id="totalBuyurtmaSon">0</td>
+          <td id="totalBuyurtmaBichilgan">0</td>
+          <td></td>
+          <td></td>
         </tr>
       </tfoot>
     </table>
@@ -96,37 +89,71 @@
   <section id="bichuv" class="page hidden">
     <h2>Bichuv Bo‘limi</h2>
     <div class="filter">
-      <input type="text" id="filterBichuv" placeholder="Klient, Model yoki Partiya bo‘yicha filter...">
+      <input type="text" id="filterBichuv" placeholder="Klient yoki Partiya bo‘yicha filter...">
     </div>
-    <form id="bichuvForm">
-      <input type="date" id="bichuvSana" required>
-      <input type="text" id="bichuvBuyurtma" placeholder="Buyurtma nomeri" required>
-      <input type="text" id="bichuvKlient" placeholder="Klient" required>
-      <input type="text" id="bichuvPartiya" placeholder="Partiya raqami" required>
-      <input type="text" id="bichuvModel" placeholder="Model nomi" required>
-      <input type="text" id="bichuvRazmer" placeholder="Razmer" required>
-      <input type="number" id="bichuvKg" placeholder="Kg" required>
-      <input type="number" id="bichuvNastel" placeholder="Nastel Qavat" required>
-      <input type="number" id="bichuvQavatSon" placeholder="Qavatdagi soni" required>
-      <input type="number" id="bichuvSon" placeholder="Bichuv soni" required>
-      <button type="submit">Qo‘shish</button>
-    </form>
-
     <table id="bichuvTable">
       <thead>
         <tr>
-          <th>Sana</th><th>Buyurtma</th><th>Klient</th><th>Partiya</th><th>Model</th>
-          <th>Razmer</th><th>Kg</th><th>Nastel Qavat</th><th>Qavatdagi soni</th><th>Bichuv soni</th>
+          <th>Sanasi</th><th>Buyurtma №</th><th>Klient</th><th>Partiya</th><th>Model</th><th>Razmeri</th>
+          <th>Mato</th><th>Grammaj</th><th>Eni</th><th>Kg</th><th>Nastel qavat</th><th>Qavatdagi soni</th>
+          <th>Bichuv soni</th><th>Topshirish</th>
         </tr>
       </thead>
       <tbody></tbody>
       <tfoot>
         <tr>
-          <td colspan="6">Total:</td>
-          <td id="totalKg">0</td>
+          <td colspan="9">Total:</td>
+          <td id="totalBichuvKg">0</td>
           <td></td>
-          <td id="totalQavat">0</td>
+          <td id="totalBichuvQavat">0</td>
           <td id="totalBichuvSon">0</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+
+  <!-- Hisobot -->
+  <section id="hisobot" class="page hidden">
+    <h2>Hisobot</h2>
+    <h3>Kirim</h3>
+    <div class="filter">
+      <input type="text" id="filterHisobotKirim" placeholder="Klient yoki Partiya bo‘yicha filter...">
+    </div>
+    <table id="hisobotKirimTable">
+      <thead>
+        <tr>
+          <th>Sanasi</th><th>Klient</th><th>Partiya</th><th>Kg</th><th>Summa</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">Total:</td>
+          <td id="totalKirimKg">0</td>
+          <td id="totalKirimSumma">0</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <h3>Hisob</h3>
+    <div class="filter">
+      <input type="text" id="filterHisobotHisob" placeholder="Klient bo‘yicha filter...">
+    </div>
+    <table id="hisobotHisobTable">
+      <thead>
+        <tr>
+          <th>Klient</th><th>Jami kg</th><th>Summa</th><th>To‘landi</th><th>Qoldiq</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td>Total:</td>
+          <td id="totalHisobKg">0</td>
+          <td id="totalHisobSumma">0</td>
+          <td id="totalHisobTolandi">0</td>
+          <td id="totalHisobQoldiq">0</td>
         </tr>
       </tfoot>
     </table>
@@ -135,3 +162,4 @@
   <script src="app.js"></script>
 </body>
 </html>
+
