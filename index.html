@@ -14,6 +14,8 @@
     <button onclick="showPage('bichuv')">✂️ Bichuv</button>
     <button onclick="showPage('kirim')">💰 Kirim</button>
     <button onclick="showPage('hisobot')">📊 Hisobot</button>
+    <button onclick="showPage('klient')">👤 Klientlar</button>
+    <button onclick="showPage('model')">👕 Model</button>
   </nav>
 
   <!-- Ombor -->
@@ -21,26 +23,37 @@
     <h2>Ombor</h2>
     <form id="omborForm">
       <input type="date" id="sana" required>
-      <select id="klientSelect"></select>
+      <select id="klientSelect" required></select>
       <input type="text" id="partiya" placeholder="Partiya raqami" required>
-      <select id="matoSelect"></select>
+      <select id="matoSelect" required></select>
       <input type="number" id="grammaj" placeholder="Grammaj" required>
       <input type="number" id="eni" placeholder="Eni" required>
       <input type="number" id="rulon" placeholder="Rulon soni" required>
       <input type="number" id="brutto" placeholder="Brutto" required>
       <input type="number" id="netto" placeholder="Netto" required>
-      <input type="number" id="bichuvNarx" placeholder="Narx" required>
+      <select id="bichuvNarx"></select>
+      <input type="text" id="holatOmbor" value="omborda" readonly>
       <button type="submit">Qo‘shish</button>
     </form>
     <input type="text" id="filterOmbor" placeholder="Filter..." oninput="renderOmborTable()">
     <table id="omborTable">
       <thead>
         <tr>
-          <th>Sana</th><th>Klient</th><th>Partiya</th><th>Mato</th><th>Grammaj</th>
-          <th>Eni</th><th>Rulon</th><th>Brutto</th><th>Netto</th><th>Narx</th><th>Summa</th><th>Holat</th>
+          <th>Sana</th><th>Klient</th><th>Partiya</th><th>Mato</th>
+          <th>Grammaj</th><th>Eni</th><th>Rulon</th><th>Brutto</th><th>Netto</th>
+          <th>Narx</th><th>Summa</th><th>Holat</th>
         </tr>
       </thead>
       <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="8">Total:</td>
+          <td id="totalNetto">0</td>
+          <td></td>
+          <td id="totalSumma">0</td>
+          <td></td>
+        </tr>
+      </tfoot>
     </table>
   </section>
 
@@ -49,24 +62,34 @@
     <h2>Buyurtmalar</h2>
     <form id="buyurtmaForm">
       <input type="date" id="buyurtmaSana" required>
-      <select id="buyurtmaKlient"></select>
-      <input type="text" id="buyurtmaNomer" placeholder="Buyurtma nomeri" required>
+      <select id="buyurtmaKlientSelect" required></select>
       <input type="text" id="buyurtmaPartiya" placeholder="Partiya raqami" required>
-      <select id="modelNomiSelect"></select>
-      <select id="modelNomerSelect"></select>
-      <select id="razmeriSelect"></select>
-      <input type="number" id="buyurtmaKg" placeholder="Kg" required>
+      <select id="modelSelect" required></select>
+      <input type="text" id="modelNomer" placeholder="Model nomeri" required>
+      <input type="text" id="razmeri" placeholder="Razmeri" required>
+      <input type="number" id="kg" placeholder="Kg" required>
       <input type="number" id="buyurtmaSon" placeholder="Buyurtma soni" required>
       <button type="submit">Qo‘shish</button>
     </form>
+    <input type="text" id="filterBuyurtma" placeholder="Filter..." oninput="renderBuyurtmaTable()">
     <table id="buyurtmaTable">
       <thead>
         <tr>
-          <th>Sana</th><th>Klient</th><th>Buyurtma #</th><th>Partiya</th>
-          <th>Model</th><th>Nomeri</th><th>Razmeri</th><th>Kg</th><th>Soni</th><th>Holat</th>
+          <th>Sana</th><th>Klient</th><th>Partiya</th><th>Model</th><th>Model Nomer</th>
+          <th>Razmeri</th><th>Kg</th><th>Buyurtma Soni</th><th>Bichilgan</th><th>Farqi</th><th>Holat</th>
         </tr>
       </thead>
       <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="6">Total:</td>
+          <td id="totalKg">0</td>
+          <td id="totalBuyurtmaSon">0</td>
+          <td id="totalBichilgan">0</td>
+          <td id="totalFarqi">0</td>
+          <td></td>
+        </tr>
+      </tfoot>
     </table>
   </section>
 
@@ -75,20 +98,28 @@
     <h2>Bichuv Bo‘limi</h2>
     <form id="bichuvForm">
       <input type="date" id="bichuvSana" required>
-      <select id="bichuvBuyurtmaNomer"></select>
-      <select id="bichuvPartiya"></select>
-      <select id="bichuvKlient"></select>
+      <select id="bichuvBuyurtmaSelect" required></select>
+      <select id="bichuvPartiyaSelect" required></select>
       <input type="number" id="bichuvKg" placeholder="Kg" required>
       <input type="number" id="bichuvSon" placeholder="Bichuv soni" required>
       <button type="submit">Qo‘shish</button>
     </form>
+    <input type="text" id="filterBichuv" placeholder="Filter..." oninput="renderBichuvTable()">
     <table id="bichuvTable">
       <thead>
         <tr>
-          <th>Sana</th><th>Buyurtma</th><th>Partiya</th><th>Klient</th><th>Kg</th><th>Soni</th><th>Holat</th>
+          <th>Sana</th><th>Buyurtma</th><th>Partiya</th><th>Kg</th><th>Bichuv Soni</th><th>Holat</th>
         </tr>
       </thead>
       <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">Total:</td>
+          <td id="totalBichuvKg">0</td>
+          <td id="totalBichuvSon">0</td>
+          <td></td>
+        </tr>
+      </tfoot>
     </table>
   </section>
 
@@ -97,11 +128,12 @@
     <h2>Kirim (To‘lovlar)</h2>
     <form id="kirimForm">
       <input type="date" id="kirimSana" required>
-      <select id="kirimKlient"></select>
-      <select id="kirimPartiya"></select>
+      <select id="kirimKlientSelect" required></select>
+      <select id="kirimPartiyaSelect"></select>
       <input type="number" id="kirimSumma" placeholder="Summa" required>
       <button type="submit">Kirim Qilish</button>
     </form>
+    <input type="text" id="filterKirim" placeholder="Filter..." oninput="renderKirimTable()">
     <table id="kirimTable">
       <thead>
         <tr>
@@ -109,12 +141,19 @@
         </tr>
       </thead>
       <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">Total:</td>
+          <td id="totalKirim">0</td>
+        </tr>
+      </tfoot>
     </table>
   </section>
 
   <!-- Hisobot -->
   <section id="hisobot" class="page hidden">
     <h2>Hisobot</h2>
+    <input type="text" id="filterHisobot" placeholder="Filter..." oninput="renderHisobotTable()">
     <table id="hisobotTable">
       <thead>
         <tr>
@@ -122,12 +161,45 @@
         </tr>
       </thead>
       <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td>Total:</td>
+          <td id="totalHisobotKg">0</td>
+          <td id="totalHisobotSumma">0</td>
+          <td id="totalHisobotTolandi">0</td>
+          <td id="totalHisobotQoldiq">0</td>
+        </tr>
+      </tfoot>
     </table>
+  </section>
+
+  <!-- Klientlar -->
+  <section id="klient" class="page hidden">
+    <h2>Klientlar</h2>
+    <form id="klientForm">
+      <input type="text" id="klientName" placeholder="Klient nomi" required>
+      <button type="submit">Qo‘shish</button>
+    </form>
+    <ul id="klientList"></ul>
+  </section>
+
+  <!-- Model -->
+  <section id="model" class="page hidden">
+    <h2>Model</h2>
+    <form id="modelForm">
+      <input type="text" id="modelName" placeholder="Model nomi" required>
+      <input type="text" id="modelMato" placeholder="Mato turi" required>
+      <input type="text" id="modelRazmeri" placeholder="Razmeri" required>
+      <input type="text" id="modelNomerInput" placeholder="Model nomeri" required>
+      <button type="submit">Qo‘shish</button>
+    </form>
+    <ul id="modelList"></ul>
   </section>
 
   <script src="app.js"></script>
 </body>
 </html>
+
 
 
 

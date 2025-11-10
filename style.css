@@ -1,85 +1,14 @@
-body {
-  font-family: "Segoe UI", sans-serif;
-  background: #f8f9fa;
-  color: #222;
-  margin: 0;
-  padding: 0 1rem;
-}
-
-h1 {
-  text-align: center;
-  margin: 1rem 0;
-}
-
-nav {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-button {
-  background: #007bff;
-  border: none;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-button:hover {
-  background: #0056b3;
-}
-
-.page {
-  display: none;
-  animation: fadeIn 0.3s;
-}
-.page:not(.hidden) {
-  display: block;
-}
-
-.hidden {
-  display: none;
-}
-
-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-form input, form select {
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-}
-
-table th, table td {
-  border: 1px solid #ccc;
-  padding: 6px;
-  text-align: center;
-}
-
-thead {
-  background: #007bff;
-  color: white;
-}
-
-tfoot {
-  background: #e9ecef;
-  font-weight: bold;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+body { font-family: Arial, sans-serif; padding: 20px; background: #f7f7f7; }
+h1 { text-align: center; }
+nav { text-align: center; margin-bottom: 20px; }
+nav button { margin: 0 5px; padding: 5px 10px; cursor: pointer; }
+.page { display: none; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+.page.active { display: block; }
+form { margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
+form input, form select, form button { padding: 5px; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+table, th, td { border: 1px solid #ccc; }
+th, td { padding: 5px; text-align: center; }
+tfoot td { font-weight: bold; }
+.hidden { display: none; }
 
