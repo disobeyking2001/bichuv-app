@@ -19,6 +19,9 @@
   <!-- Ombor -->
   <section id="ombor" class="page">
     <h2>Ombor</h2>
+    <div class="filter">
+      <input type="text" id="filterOmbor" placeholder="Klient, Mato yoki Partiya bo‘yicha filter...">
+    </div>
     <form id="omborForm">
       <input type="date" id="sana" required>
       <input type="text" id="klient" placeholder="Klient" required>
@@ -42,25 +45,90 @@
         </tr>
       </thead>
       <tbody></tbody>
+      <tfoot>
+        <tr id="omborTotal">
+          <td colspan="7">Total:</td>
+          <td id="totalBrutto">0</td>
+          <td id="totalNetto">0</td>
+          <td></td>
+          <td id="totalSumma">0</td>
+          <td></td>
+        </tr>
+      </tfoot>
     </table>
   </section>
 
   <!-- Buyurtma -->
   <section id="buyurtma" class="page hidden">
     <h2>Buyurtmalar</h2>
-    <p>Bu bo‘lim keyingi bosqichda kodlanadi.</p>
+    <div class="filter">
+      <input type="text" id="filterBuyurtma" placeholder="Klient yoki Model bo‘yicha filter...">
+    </div>
+    <table id="buyurtmaTable">
+      <thead>
+        <tr>
+          <th>Sanasi</th><th>Klient</th><th>Partiya</th><th>Model</th><th>Razmer</th><th>Buyurtma Soni</th><th>Bichilgan</th><th>Farq</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr id="buyurtmaTotal">
+          <td colspan="5">Total:</td>
+          <td id="totalBuyurtma">0</td>
+          <td id="totalBichilgan">0</td>
+          <td id="totalFarq">0</td>
+        </tr>
+      </tfoot>
+    </table>
   </section>
 
   <!-- Bichuv -->
   <section id="bichuv" class="page hidden">
     <h2>Bichuv Bo‘limi</h2>
-    <p>Bu bo‘lim keyingi bosqichda qo‘shiladi.</p>
+    <div class="filter">
+      <input type="text" id="filterBichuv" placeholder="Klient, Model yoki Partiya bo‘yicha filter...">
+    </div>
+    <table id="bichuvTable">
+      <thead>
+        <tr>
+          <th>Sana</th><th>Buyurtma</th><th>Klient</th><th>Partiya</th><th>Model</th>
+          <th>Razmer</th><th>Kg</th><th>Nastel Qavat</th><th>Qavatdagi soni</th><th>Bichuv soni</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr id="bichuvTotal">
+          <td colspan="6">Total:</td>
+          <td id="totalKg">0</td>
+          <td></td>
+          <td id="totalQavat">0</td>
+          <td id="totalBichuvSon">0</td>
+        </tr>
+      </tfoot>
+    </table>
   </section>
 
   <!-- Hisobot -->
   <section id="hisobot" class="page hidden">
     <h2>Hisobot</h2>
-    <p>Bu bo‘lim keyingi bosqichda qo‘shiladi.</p>
+    <p>Hisobot avtomatik hisoblanadi.</p>
+    <table id="hisobotTable">
+      <thead>
+        <tr>
+          <th>Klient</th><th>Jami KG</th><th>Jami Summa</th><th>To‘landi</th><th>Qoldiq</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr id="hisobotTotal">
+          <td>Total:</td>
+          <td id="totalHisobKg">0</td>
+          <td id="totalHisobSumma">0</td>
+          <td id="totalHisobTolandi">0</td>
+          <td id="totalHisobQoldiq">0</td>
+        </tr>
+      </tfoot>
+    </table>
   </section>
 
   <script src="app.js"></script>
