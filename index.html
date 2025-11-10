@@ -1,50 +1,67 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <title>Bichuv Ombori</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bichuv Bo‘limi Dasturi</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>🧵 Ombor Bo‘limi</h1>
+  <h1>Bichuv Bo‘limi Dasturi</h1>
 
-  <form id="omborForm">
-    <input type="date" id="sana" required>
-    <input type="text" id="klient" placeholder="Klient nomi" required>
-    <input type="text" id="partiya" placeholder="Partiya raqami" required>
-    <input type="text" id="mato" placeholder="Mato turi" required>
-    <input type="number" id="grammaj" placeholder="Grammaj" required>
-    <input type="number" id="eni" placeholder="Eni (sm)" required>
-    <input type="number" id="rulon" placeholder="Rulon soni" required>
-    <input type="number" id="brutto" placeholder="Brutto (kg)" required>
-    <input type="number" id="netto" placeholder="Netto (kg)" required>
+  <nav>
+    <button onclick="showPage('ombor')">🧵 Ombor</button>
+    <button onclick="showPage('buyurtma')">📋 Buyurtma</button>
+    <button onclick="showPage('bichuv')">✂️ Bichuv</button>
+    <button onclick="showPage('hisobot')">📊 Hisobot</button>
+  </nav>
 
-    <select id="bichuvNarx">
-      <option value="">Bichuv narxini tanlang</option>
-    </select>
+  <!-- Ombor -->
+  <section id="ombor" class="page">
+    <h2>Ombor</h2>
+    <form id="omborForm">
+      <input type="date" id="sana" required>
+      <input type="text" id="klient" placeholder="Klient" required>
+      <input type="text" id="partiya" placeholder="Partiya raqami" required>
+      <input type="text" id="mato" placeholder="Mato turi" required>
+      <input type="number" id="grammaj" placeholder="Grammaj" required>
+      <input type="number" id="eni" placeholder="Eni" required>
+      <input type="number" id="rulon" placeholder="Rulon soni" required>
+      <input type="number" id="brutto" placeholder="Brutto" required>
+      <input type="number" id="netto" placeholder="Netto" required>
+      <select id="bichuvNarx"></select>
+      <button type="submit">Qo‘shish</button>
+    </form>
 
-    <button type="submit">➕ Qo‘shish</button>
-  </form>
+    <table id="omborTable">
+      <thead>
+        <tr>
+          <th>Sana</th><th>Klient</th><th>Partiya</th><th>Mato</th>
+          <th>Grammaj</th><th>Eni</th><th>Rulon</th><th>Brutto</th><th>Netto</th>
+          <th>Narx</th><th>Summa</th><th>Holat</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
 
-  <table id="omborTable">
-    <thead>
-      <tr>
-        <th>Sana</th>
-        <th>Klient</th>
-        <th>Partiya</th>
-        <th>Mato</th>
-        <th>Grammaj</th>
-        <th>Eni</th>
-        <th>Rulon</th>
-        <th>Brutto</th>
-        <th>Netto</th>
-        <th>Bichuv narxi</th>
-        <th>Summa</th>
-        <th>Holat</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <!-- Buyurtma -->
+  <section id="buyurtma" class="page hidden">
+    <h2>Buyurtmalar</h2>
+    <p>Bu bo‘lim keyingi bosqichda kodlanadi.</p>
+  </section>
+
+  <!-- Bichuv -->
+  <section id="bichuv" class="page hidden">
+    <h2>Bichuv Bo‘limi</h2>
+    <p>Bu bo‘lim keyingi bosqichda qo‘shiladi.</p>
+  </section>
+
+  <!-- Hisobot -->
+  <section id="hisobot" class="page hidden">
+    <h2>Hisobot</h2>
+    <p>Bu bo‘lim keyingi bosqichda qo‘shiladi.</p>
+  </section>
 
   <script src="app.js"></script>
 </body>
