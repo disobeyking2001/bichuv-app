@@ -174,77 +174,115 @@ function renderOmbor() {
         <th>Rulon soni</th>
         <th>Brutto</th>
         <th>Netto</th>
-        <th>Rib/Kash</th> <!-- yangi ustun -->
         <th>Qoldiq</th>
         <th>Bichuv narxi</th>
         <th>Summasi</th>
         <th>Holat</th>
-        <th>O'zgartirish</th>
+        <th>O‘zgartirish</th>
       </tr>
     </thead>
     <tbody>`;
-
-  omborData.forEach(o => html += `<tr>
-    <td>${o.sana}</td>
-    <td>${o.klient}</td>
-    <td>${o.partiya}</td>
-    <td>${o.mato}</td>
-    <td>${o.rang}</td>
-    <td>${o.grammaj}</td>
-    <td>${o.en}</td>
-    <td>${o.rulon}</td>
-    <td>${o.brutto}</td>
-    <td>${o.netto}</td>
-    <td>${o.ribKash || ''}</td> <!-- yangi ustun qiymati -->
-    <td>${o.qoldiq}</td>
-    <td>${o.bichuvNarxi}</td>
-    <td>${o.summasi}</td>
-    <td>${o.holat}</td>
-    <td><button onclick="editOmbor('${o.partiya}')">O'zgartirish</button></td>
-  </tr>`);
+  
+  omborData.forEach((o, index) => {
+    let bichuvKg = 0;
+    let narx = narxData.find(n => n.klient === o.klient && n.mato === o.mato) || {price: 0};
+    let sum = o.netto * narx.price;
+    
+    // Qoldiq: bichuvData dan topilgan kg
+    let usedKg = bichuvData.filter(b => b.partiya === o.partiya).reduce((acc,b)=>acc+b.netto,0);
+    let qoldiq = o.netto - usedKg;
+    
+    // Holat
+    let holat = usedKg >= o.netto ? "Topshirildi" : "Tayyorlanmoqda";
+    
+    html += `<tr>
+      <td>${o.sana}</td>
+      <td>${o.klient}</td>
+      <td>${o.partiya}</td>
+      <td>${o.mato}</td>
+      <td>${o.rangi}</td>
+      <td>${o.grammaj}</td>
+      <td>${o.eni}</td>
+      <td>${o.rulon}</td>
+      <td>${o.brutto}</td>
+      <td>${o.netto}</td>
+      <td>${qoldiq}</td>
+      <td>${narx.price}</td>
+      <td>${sum}</td>
+      <td>${holat}</td>
+      <td><button onclick="modalEditOmbor(${index})">O‘zgartirish</button></td>
+    </tr>`;
+  });
 
   html += `</tbody></table>`;
   document.getElementById("ombor").innerHTML = html;
 }
 
 function modalAddOmbor() {
-  let klientOptions = klientData.map(k=>k.name);
-  let matoOptions = matoData.map(m=>m.name);
-
   let html = `<h3>Omborga mahsulot qo‘shish</h3>
-    <input type="date" id="omborSana">
-    ${createSelect(klientOptions, 'omborKlient', 'Klient tanlang')}
+    <input type="date" id="omborSana" placeholder="Sana">
+    ${createSelect(klientData.map(k=>k.name),"omborKlient","Klient tanlang")}
     <input id="omborPartiya" placeholder="Partiya">
-    ${createSelect(matoOptions, 'omborMato', 'Mato turi')}
-    <input id="omborRang" placeholder="Rangi">
+    ${createSelect(matoData.map(m=>m.name),"omborMato","Mato tanlang")}
+    <input id="omborRangi" placeholder="Rangi">
     <input id="omborGrammaj" placeholder="Grammaj">
-    <input id="omborEn" placeholder="Eni">
+    <input id="omborEni" placeholder="Eni">
     <input id="omborRulon" type="number" placeholder="Rulon soni">
     <input id="omborBrutto" type="number" placeholder="Brutto">
     <input id="omborNetto" type="number" placeholder="Netto">
-    <input id="omborRibKash" type="number" placeholder="Rib/Kash"> <!-- yangi input -->
     <button onclick="addOmbor()">Saqlash</button>`;
-  
   openModal(html);
 }
 
 function addOmbor() {
-  let sana = omborSana.value,
-      klient = omborKlient.value,
-      partiya = omborPartiya.value,
-      mato = omborMato.value,
-      rang = omborRang.value,
-      grammaj = omborGrammaj.value,
-      en = omborEn.value,
-      rulon = omborRulon.value,
-      brutto = omborBrutto.value,
-      netto = omborNetto.value,
-      ribKash = omborRibKash.value; // yangi ustun
-      // qoldiq, bichuvNarxi, summasi, holat keyin hisoblanadi
-
-  if(!klient || !partiya || !mato || !netto) return alert("To'liq ma'lumot kiriting!");
+  let sana = omborSana.value;
+  let klient = omborKlient.value;
+  let partiya = omborPartiya.value;
+  let mato = omborMato.value;
+  let rangi = omborRangi.value;
+  let gramm = omborGrammaj.value;
+  let eni = omborEni.value;
+  let rulon = omborRulon.value;
+  let brutto = omborBrutto.value;
+  let netto = omborNetto.value;
   
-  omborData.push({sana, klient, partiya, mato, rang, grammaj, en, rulon, brutto, netto, ribKash, qoldiq:netto, bichuvNarxi:0, summasi:0, holat:'Kutilmoqda'});
+  if(!sana || !klient || !partiya || !mato || !netto) return alert("Sana, klient, partiya, mato va netto majburiy!");
+  
+  omborData.push({sana, klient, partiya, mato, rangi, gramm, eni, rulon, brutto, netto});
+  localStorage.setItem("omborData", JSON.stringify(omborData));
+  closeModal();
+  renderOmbor();
+}
+
+function modalEditOmbor(index) {
+  let o = omborData[index];
+  let html = `<h3>Ombor ma'lumotlarini o'zgartirish</h3>
+    <input type="date" id="editSana" value="${o.sana}">
+    ${createSelect(klientData.map(k=>k.name),"editKlient","Klient tanlang")}
+    <input id="editPartiya" value="${o.partiya}">
+    ${createSelect(matoData.map(m=>m.name),"editMato","Mato tanlang")}
+    <input id="editRangi" value="${o.rangi}">
+    <input id="editGrammaj" value="${o.grammaj}">
+    <input id="editEni" value="${o.eni}">
+    <input id="editRulon" type="number" value="${o.rulon}">
+    <input id="editBrutto" type="number" value="${o.brutto}">
+    <input id="editNetto" type="number" value="${o.netto}">
+    <button onclick="saveEditOmbor(${index})">Saqlash</button>`;
+  openModal(html);
+}
+
+function saveEditOmbor(index) {
+  let o = omborData[index];
+  o.sana = editSana.value;
+  o.klient = editKlient.value;
+  o.partiya = editPartiya.value;
+  o.mato = editMato.value;
+  o.rangi = editRangi.value;
+  o.grammaj = editGrammaj.value;
+  o.eni = editEni.value;
+  o.rulon = editRulon.value;
+  o.brutto = editBrutto.value;
+  o.netto = editNetto.value;
   localStorage.setItem("omborData", JSON.stringify(omborData));
   closeModal();
   renderOmbor();
