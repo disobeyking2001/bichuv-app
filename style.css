@@ -1,9 +1,11 @@
+/* Umumiy tana */
 body {
   margin: 0;
   font-family: "Segoe UI", sans-serif;
   background-color: #f5f6fa;
   display: flex;
   height: 100vh;
+  overflow: hidden;
 }
 
 /* Sidebar menyu */
@@ -13,6 +15,7 @@ body {
   color: white;
   padding-top: 15px;
   transition: width 0.3s;
+  flex-shrink: 0;
 }
 
 .sidebar .menu-toggle {
@@ -47,10 +50,12 @@ body {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
+  height: 100vh;
 }
 
 h1 {
   color: #2c3e50;
+  margin-top: 0;
 }
 
 button {
@@ -85,6 +90,11 @@ table th {
   color: white;
 }
 
+.total-row {
+  font-weight: bold;
+  background: #ecf0f1;
+}
+
 /* Modal oynasi */
 .modal {
   position: fixed;
@@ -94,6 +104,7 @@ table th {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
 
 .modal.hidden {
@@ -106,12 +117,16 @@ table th {
   border-radius: 8px;
   width: 400px;
   max-width: 90%;
+  position: relative;
 }
 
 .close {
-  float: right;
-  font-size: 20px;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 22px;
   cursor: pointer;
+  font-weight: bold;
 }
 
 input, select {
@@ -120,6 +135,7 @@ input, select {
   margin: 5px 0 10px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
+  box-sizing: border-box;
 }
 
 /* Sahifalar */
@@ -131,11 +147,26 @@ input, select {
   display: block;
 }
 
+/* Filterlar */
+.ombor-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: flex-end;
+}
+
+.ombor-filter label {
+  margin-right: 5px;
+}
+
 /* Responsiv menyu (mobil uchun) */
 @media(max-width: 768px) {
   .sidebar {
     position: fixed;
     width: 60px;
+    height: 100%;
+    z-index: 100;
   }
 
   .sidebar ul {
@@ -153,6 +184,10 @@ input, select {
 
   .sidebar .menu-toggle {
     display: block;
+  }
+
+  .content {
+    padding-left: 70px;
   }
 }
 
