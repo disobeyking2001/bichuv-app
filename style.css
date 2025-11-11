@@ -1,84 +1,99 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f5f6fa;
   display: flex;
+  height: 100vh;
 }
 
+/* Sidebar menyu */
 .sidebar {
   width: 220px;
   background: #2c3e50;
   color: white;
-  height: 100vh;
-  position: fixed;
-  overflow-y: auto;
-  padding-top: 20px;
+  padding-top: 15px;
+  transition: width 0.3s;
 }
 
 .sidebar .menu-toggle {
-  display: block;
-  margin: 0 auto 20px;
+  display: none;
   background: #34495e;
-  border: none;
   color: white;
+  border: none;
+  width: 100%;
   padding: 10px;
-  width: 80%;
+  font-size: 18px;
   cursor: pointer;
 }
 
-.sidebar ul.menu {
+.sidebar ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
-.sidebar ul.menu li {
+.sidebar ul li {
   padding: 12px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar ul li:hover {
+  background: #1abc9c;
+}
+
+/* Asosiy kontent */
+.content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+h1 {
+  color: #2c3e50;
+}
+
+button {
+  background: #1abc9c;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  margin: 5px 0;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-.sidebar ul.menu li:hover {
-  background: #34495e;
-}
-
-.content {
-  margin-left: 220px;
-  padding: 20px;
-  width: calc(100% - 220px);
-}
-
-.page {
-  display: none;
-}
-
-.page.active {
-  display: block;
+button:hover {
+  background: #16a085;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
+  background: white;
 }
 
-table, th, td {
-  border: 1px solid #ccc;
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
 }
 
-th, td {
-  padding: 6px;
-  text-align: center;
+table th {
+  background: #34495e;
+  color: white;
 }
 
-tfoot td {
-  font-weight: bold;
-}
-
+/* Modal oynasi */
 .modal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   position: fixed;
-  left:0; top:0; right:0; bottom:0;
-  background: rgba(0,0,0,0.5);
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal.hidden {
@@ -88,23 +103,57 @@ tfoot td {
 .modal-content {
   background: white;
   padding: 20px;
-  width: 500px;
-  max-width: 95%;
-  position: relative;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
 }
 
-.modal-content .close {
-  position: absolute;
-  top:10px;
-  right:15px;
+.close {
+  float: right;
   font-size: 20px;
   cursor: pointer;
-  font-weight: bold;
 }
 
-button {
-  cursor: pointer;
-  margin: 2px;
-  padding: 6px 12px;
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
+
+/* Sahifalar */
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+/* Responsiv menyu (mobil uchun) */
+@media(max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    width: 60px;
+  }
+
+  .sidebar ul {
+    display: none;
+  }
+
+  .sidebar.active ul {
+    display: block;
+    width: 180px;
+    background: #2c3e50;
+    position: absolute;
+    top: 50px;
+    left: 0;
+  }
+
+  .sidebar .menu-toggle {
+    display: block;
+  }
+}
+
 

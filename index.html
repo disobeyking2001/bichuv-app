@@ -1,55 +1,56 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bichuv ERP Dasturi</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bichuv ERP Dasturi</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- Chap menyu -->
-<div class="sidebar">
-  <button class="menu-toggle">☰ Menyu</button>
-  <ul class="menu">
-    <li onclick="showPage('ombor')">🧵 Ombor</li>
-    <li onclick="showPage('buyurtma')">📋 Buyurtma</li>
-    <li onclick="showPage('bichuv')">✂️ Bichuv</li>
-    <li onclick="showPage('kirim')">💰 Kirim</li>
-    <li onclick="showPage('hisobot')">📊 Hisobot</li>
-    <li onclick="showPage('klient')">👤 Klient</li>
-    <li onclick="showPage('model')">🏷️ Model</li>
-    <li onclick="showPage('mato')">🧵 Mato turi</li>
-    <li onclick="showPage('narx')">💵 Narx</li>
-  </ul>
-</div>
-
-<div class="content">
-  <h1>Bichuv ERP Dasturi</h1>
-
-  <!-- MODAL PANEL -->
-  <div id="modal" class="modal hidden">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <div id="modal-body"></div>
-    </div>
+  <!-- Chap menyu -->
+  <div class="sidebar">
+    <button class="menu-toggle">☰ Menyu</button>
+    <ul class="menu">
+      <li onclick="showPage('ombor')">🧵 Ombor</li>
+      <li onclick="showPage('buyurtma')">📋 Buyurtma</li>
+      <li onclick="showPage('bichuv')">✂️ Bichuv</li>
+      <li onclick="showPage('kirim')">💰 Kirim</li>
+      <li onclick="showPage('hisobot')">📊 Hisobot</li>
+      <li onclick="showPage('klient')">👤 Klient</li>
+      <li onclick="showPage('model')">🏷️ Model</li>
+      <li onclick="showPage('mato')">🧶 Mato turi</li>
+      <li onclick="showPage('narx')">💵 Narx</li>
+    </ul>
   </div>
 
-  <!-- Bo'limlar -->
-  <section id="ombor" class="page active"></section>
-  <section id="buyurtma" class="page hidden"></section>
-  <section id="bichuv" class="page hidden"></section>
-  <section id="kirim" class="page hidden"></section>
-  <section id="hisobot" class="page hidden"></section>
-  <section id="klient" class="page hidden"></section>
-  <section id="model" class="page hidden"></section>
-  <section id="mato" class="page hidden"></section>
-  <section id="narx" class="page hidden"></section>
+  <!-- Asosiy kontent -->
+  <div class="content">
+    <h1>Bichuv ERP Dasturi</h1>
 
-</div>
+    <!-- Modal -->
+    <div id="modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div id="modal-body"></div>
+      </div>
+    </div>
 
-<script src="app.js"></script>
+    <!-- Sahifalar -->
+    <section id="ombor" class="page active"></section>
+    <section id="buyurtma" class="page hidden"></section>
+    <section id="bichuv" class="page hidden"></section>
+    <section id="kirim" class="page hidden"></section>
+    <section id="hisobot" class="page hidden"></section>
+    <section id="klient" class="page hidden"></section>
+    <section id="model" class="page hidden"></section>
+    <section id="mato" class="page hidden"></section>
+    <section id="narx" class="page hidden"></section>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
+
 
 
