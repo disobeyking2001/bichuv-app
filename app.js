@@ -194,6 +194,15 @@ function renderOmbor() {
     
     // Holat
     let holat = usedKg >= o.netto ? "Topshirildi" : "Tayyorlanmoqda";
+
+    // --- renderOmbor ichida, omborData.forEach() tugagandan keyin ---
+let totalNetto = omborData.reduce((acc, o) => acc + Number(o.netto || 0), 0);
+html += `<tr>
+  <td colspan="9" style="text-align:right"><b>Jami Netto:</b></td>
+  <td><b>${totalNetto}</b></td>
+  <td colspan="5"></td>
+</tr>`;
+
     
     html += `<tr>
       <td>${o.sana}</td>
