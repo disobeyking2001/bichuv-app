@@ -174,6 +174,7 @@ function renderOmbor() {
         <th>Rulon soni</th>
         <th>Brutto</th>
         <th>Netto</th>
+        <th>Rib/Kash</th>
         <th>Qoldiq</th>
         <th>Bichuv narxi</th>
         <th>Summasi</th>
@@ -184,7 +185,6 @@ function renderOmbor() {
     <tbody>`;
   
   omborData.forEach((o, index) => {
-    let bichuvKg = 0;
     let narx = narxData.find(n => n.klient === o.klient && n.mato === o.mato) || {price: 0};
     let sum = o.netto * narx.price;
     
@@ -206,6 +206,7 @@ function renderOmbor() {
       <td>${o.rulon}</td>
       <td>${o.brutto}</td>
       <td>${o.netto}</td>
+      <td>${o.ribKash || ''}</td>
       <td>${qoldiq}</td>
       <td>${narx.price}</td>
       <td>${sum}</td>
@@ -230,6 +231,7 @@ function modalAddOmbor() {
     <input id="omborRulon" type="number" placeholder="Rulon soni">
     <input id="omborBrutto" type="number" placeholder="Brutto">
     <input id="omborNetto" type="number" placeholder="Netto">
+    <input id="omborRibKash" type="number" placeholder="Rib/Kash">
     <button onclick="addOmbor()">Saqlash</button>`;
   openModal(html);
 }
@@ -245,10 +247,11 @@ function addOmbor() {
   let rulon = omborRulon.value;
   let brutto = omborBrutto.value;
   let netto = omborNetto.value;
+  let ribKash = omborRibKash.value;
   
   if(!sana || !klient || !partiya || !mato || !netto) return alert("Sana, klient, partiya, mato va netto majburiy!");
   
-  omborData.push({sana, klient, partiya, mato, rangi, gramm, eni, rulon, brutto, netto});
+  omborData.push({sana, klient, partiya, mato, rangi, gramm, eni, rulon, brutto, netto, ribKash});
   localStorage.setItem("omborData", JSON.stringify(omborData));
   closeModal();
   renderOmbor();
@@ -267,6 +270,7 @@ function modalEditOmbor(index) {
     <input id="editRulon" type="number" value="${o.rulon}">
     <input id="editBrutto" type="number" value="${o.brutto}">
     <input id="editNetto" type="number" value="${o.netto}">
+    <input id="editRibKash" type="number" value="${o.ribKash || ''}">
     <button onclick="saveEditOmbor(${index})">Saqlash</button>`;
   openModal(html);
 }
@@ -283,6 +287,7 @@ function saveEditOmbor(index) {
   o.rulon = editRulon.value;
   o.brutto = editBrutto.value;
   o.netto = editNetto.value;
+  o.ribKash = editRibKash.value;
   localStorage.setItem("omborData", JSON.stringify(omborData));
   closeModal();
   renderOmbor();
