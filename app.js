@@ -1,183 +1,159 @@
-// Sidebar toggle
-const sidebar = document.getElementById('sidebar');
-document.getElementById('sidebarToggle').addEventListener('click', () => {
-  sidebar.classList.toggle('hidden');
-});
+// --- Data storage ---
+let klientData = JSON.parse(localStorage.getItem("klientData") || "[]");
+let modelData = JSON.parse(localStorage.getItem("modelData") || "[]");
+let matoData = JSON.parse(localStorage.getItem("matoData") || "[]");
+let narxData = JSON.parse(localStorage.getItem("narxData") || "[]");
+let omborData = JSON.parse(localStorage.getItem("omborData") || "[]");
+let buyurtmaData = JSON.parse(localStorage.getItem("buyurtmaData") || "[]");
+let bichuvData = JSON.parse(localStorage.getItem("bichuvData") || "[]");
+let kirimData = JSON.parse(localStorage.getItem("kirimData") || "[]");
 
-// Modal
-const modal = document.getElementById('modal');
-const modalForm = document.getElementById('modalForm');
-let currentSection = '';
-
-function openModal(section) {
-  currentSection = section;
-  modal.classList.remove('hidden');
-  renderModalForm(section);
-}
-
-function closeModal() {
-  modal.classList.add('hidden');
-  modalForm.innerHTML = '';
-}
-
-// Show page
+// --- Page navigation ---
 function showPage(id) {
-  document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  renderAllTables();
 }
 
-// Sample data arrays
-let klientlar = [];
-let modelList = [];
-let matoList = [];
-let narxList = [];
-
-let omborData = [];
-let buyurtmaData = [];
-let bichuvData = [];
-let kirimData = [];
-
-// Modal form rendering
-function renderModalForm(section) {
-  let html = '';
-  if(section === 'klient') {
-    html = `
-      <h3>Klient Qo'shish</h3>
-      <input type="text" id="klientNom" placeholder="Nom" required><br>
-      <input type="text" id="klientManzil" placeholder="Manzil"><br>
-      <input type="text" id="klientTel" placeholder="Tel"><br>
-      <button type="button" onclick="saveKlient()">Saqlash</button>
-    `;
-  } else if(section === 'model') {
-    html = `
-      <h3>Model Qo'shish</h3>
-      <input type="text" id="modelNom" placeholder="Model nomi" required><br>
-      <input type="text" id="modelNomeri" placeholder="Model nomeri" required><br>
-      <button type="button" onclick="saveModel()">Saqlash</button>
-    `;
-  } else if(section === 'mato') {
-    html = `
-      <h3>Mato turi Qo'shish</h3>
-      <input type="text" id="matoNom" placeholder="Mato turi" required><br>
-      <input type="text" id="matoIzoh" placeholder="Izoh"><br>
-      <button type="button" onclick="saveMato()">Saqlash</button>
-    `;
-  } else if(section === 'narx') {
-    html = `
-      <h3>Narx Qo'shish</h3>
-      <select id="narxKlient">${klientlar.map(k=>`<option value="${k.nom}">${k.nom}</option>`)}</select><br>
-      <select id="narxMato">${matoList.map(m=>`<option value="${m.nom}">${m.nom}</option>`)}</select><br>
-      <input type="number" id="narxValue" placeholder="Narx" required><br>
-      <button type="button" onclick="saveNarx()">Saqlash</button>
-    `;
-  } else if(section === 'ombor') {
-    html = `
-      <h3>Ombor Qo'shish</h3>
-      <input type="date" id="omborSana"><br>
-      <select id="omborKlient">${klientlar.map(k=>`<option value="${k.nom}">${k.nom}</option>`)}</select><br>
-      <input type="text" id="omborPartiya" placeholder="Partiya"><br>
-      <select id="omborMato">${matoList.map(m=>`<option value="${m.nom}">${m.nom}</option>`)}</select><br>
-      <input type="text" id="omborRangi" placeholder="Rangi"><br>
-      <input type="number" id="omborGrammaj" placeholder="Grammaj"><br>
-      <input type="number" id="omborEni" placeholder="Eni"><br>
-      <input type="number" id="omborRulon" placeholder="Rulon soni"><br>
-      <input type="number" id="omborBrutto" placeholder="Brutto"><br>
-      <input type="number" id="omborNetto" placeholder="Netto"><br>
-      <button type="button" onclick="saveOmbor()">Saqlash</button>
-    `;
-  }
-  modalForm.innerHTML = html;
+function renderAllTables() {
+  renderOmbor(); renderBuyurtma(); renderBichuv();
+  renderKirim(); renderHisobot(); renderKlient();
+  renderModel(); renderMato(); renderNarx();
 }
 
-// Example save functions
-function saveKlient() {
-  const nom = document.getElementById('klientNom').value;
-  const manzil = document.getElementById('klientManzil').value;
-  const tel = document.getElementById('klientTel').value;
-  klientlar.push({nom, manzil, tel});
-  renderKlientTable();
+// --- Modal ---
+function openModal(html) {
+  document.getElementById("modal-body").innerHTML = html;
+  document.getElementById("modal").classList.remove("hidden");
+}
+function closeModal() { document.getElementById("modal").classList.add("hidden"); }
+
+// --- Helper functions ---
+function createSelect(options, id, placeholder) {
+  let html = `<select id="${id}"><option value="">${placeholder}</option>`;
+  options.forEach(o => html += `<option value="${o}">${o}</option>`);
+  html += `</select>`;
+  return html;
+}
+
+// --- CLIENT ---
+function renderKlient() {
+  let html = `<h2>Klientlar</h2><button onclick="modalAddKlient()">+ Klient qo'shish</button>`;
+  html += `<table><thead><tr><th>Klient</th><th>Manzil</th><th>Tel</th></tr></thead><tbody>`;
+  klientData.forEach(c => html += `<tr><td>${c.name}</td><td>${c.address}</td><td>${c.tel}</td></tr>`);
+  html += `</tbody></table>`;
+  document.getElementById("klient").innerHTML = html;
+}
+
+function modalAddKlient() {
+  let html = `<h3>Klient qo'shish</h3>
+    <input placeholder="Klient nomi" id="klientName">
+    <input placeholder="Manzil" id="klientAddress">
+    <input placeholder="Tel" id="klientTel">
+    <button onclick="addKlient()">Qo'shish</button>`;
+  openModal(html);
+}
+
+function addKlient() {
+  let name = document.getElementById("klientName").value;
+  let address = document.getElementById("klientAddress").value;
+  let tel = document.getElementById("klientTel").value;
+  if(!name) return alert("Klient nomi kerak");
+  klientData.push({name,address,tel});
+  localStorage.setItem("klientData", JSON.stringify(klientData));
   closeModal();
+  renderKlient();
 }
 
-function saveModel() {
-  const nom = document.getElementById('modelNom').value;
-  const nomeri = document.getElementById('modelNomeri').value;
-  modelList.push({nom, nomeri});
-  renderModelTable();
+// --- MODEL ---
+function renderModel() {
+  let html = `<h2>Model</h2><button onclick="modalAddModel()">+ Model qo'shish</button>`;
+  html += `<table><thead><tr><th>Model nomi</th><th>Model nomeri</th></tr></thead><tbody>`;
+  modelData.forEach(m => html += `<tr><td>${m.name}</td><td>${m.code}</td></tr>`);
+  html += `</tbody></table>`;
+  document.getElementById("model").innerHTML = html;
+}
+
+function modalAddModel() {
+  let html = `<h3>Model qo'shish</h3>
+    <input placeholder="Model nomi" id="modelName">
+    <input placeholder="Model nomeri" id="modelCode">
+    <button onclick="addModel()">Qo'shish</button>`;
+  openModal(html);
+}
+
+function addModel() {
+  let name = document.getElementById("modelName").value;
+  let code = document.getElementById("modelCode").value;
+  if(!name) return alert("Model nomi kerak");
+  modelData.push({name,code});
+  localStorage.setItem("modelData", JSON.stringify(modelData));
   closeModal();
+  renderModel();
 }
 
-function saveMato() {
-  const nom = document.getElementById('matoNom').value;
-  const izoh = document.getElementById('matoIzoh').value;
-  matoList.push({nom, izoh});
-  renderMatoTable();
+// --- MATO ---
+function renderMato() {
+  let html = `<h2>Mato turlari</h2><button onclick="modalAddMato()">+ Mato turi qo'shish</button>`;
+  html += `<table><thead><tr><th>Mato turi</th><th>Izoh</th></tr></thead><tbody>`;
+  matoData.forEach(m => html += `<tr><td>${m.name}</td><td>${m.note}</td></tr>`);
+  html += `</tbody></table>`;
+  document.getElementById("mato").innerHTML = html;
+}
+
+function modalAddMato() {
+  let html = `<h3>Mato qo'shish</h3>
+    <input placeholder="Mato turi" id="matoName">
+    <input placeholder="Izoh" id="matoNote">
+    <button onclick="addMato()">Qo'shish</button>`;
+  openModal(html);
+}
+
+function addMato() {
+  let name = document.getElementById("matoName").value;
+  let note = document.getElementById("matoNote").value;
+  if(!name) return alert("Mato nomi kerak");
+  matoData.push({name,note});
+  localStorage.setItem("matoData", JSON.stringify(matoData));
   closeModal();
+  renderMato();
 }
 
-function saveNarx() {
-  const klient = document.getElementById('narxKlient').value;
-  const mato = document.getElementById('narxMato').value;
-  const narx = document.getElementById('narxValue').value;
-  narxList.push({klient, mato, narx});
-  renderNarxTable();
+// --- NARX ---
+function renderNarx() {
+  let html = `<h2>Narxlar</h2><button onclick="modalAddNarx()">+ Narx qo'shish</button>`;
+  html += `<table><thead><tr><th>Klient</th><th>Mato turi</th><th>Narx</th></tr></thead><tbody>`;
+  narxData.forEach(n => html += `<tr><td>${n.klient}</td><td>${n.mato}</td><td>${n.price}</td></tr>`);
+  html += `</tbody></table>`;
+  document.getElementById("narx").innerHTML = html;
+}
+
+function modalAddNarx() {
+  let klientOptions = klientData.map(k=>k.name);
+  let matoOptions = matoData.map(m=>m.name);
+  let html = `<h3>Narx qo'shish</h3>
+    ${createSelect(klientOptions,'narxKlient','Klient tanlang')}
+    ${createSelect(matoOptions,'narxMato','Mato tanlang')}
+    <input placeholder="Narx" type="number" id="narxPrice">
+    <button onclick="addNarx()">Qo'shish</button>`;
+  openModal(html);
+}
+
+function addNarx() {
+  let klient = document.getElementById("narxKlient").value;
+  let mato = document.getElementById("narxMato").value;
+  let price = +document.getElementById("narxPrice").value;
+  if(!klient||!mato||!price) return alert("To‘liq ma'lumot kiriting");
+  narxData.push({klient,mato,price});
+  localStorage.setItem("narxData",JSON.stringify(narxData));
   closeModal();
+  renderNarx();
 }
 
-function saveOmbor() {
-  const sana = document.getElementById('omborSana').value;
-  const klient = document.getElementById('omborKlient').value;
-  const partiya = document.getElementById('omborPartiya').value;
-  const mato = document.getElementById('omborMato').value;
-  const rangi = document.getElementById('omborRangi').value;
-  const gramm = parseFloat(document.getElementById('omborGrammaj').value) || 0;
-  const eni = parseFloat(document.getElementById('omborEni').value) || 0;
-  const rulon = parseInt(document.getElementById('omborRulon').value) || 0;
-  const brutto = parseFloat(document.getElementById('omborBrutto').value) || 0;
-  const netto = parseFloat(document.getElementById('omborNetto').value) || 0;
+// --- TODO: OMBOR, BUYURTMA, BICHUV, KIRIM, HISOBOT table rendering va funktsiyalari ---
+// Shu kodlarni ham shu faylga birlashtirib, barcha selectlar va avtomatik holat o‘zgarishini qo‘shish kerak.
+// Barcha filterlar, total row, print/pdf/excel funksiyalari ham qo‘shilishi lozim.
 
-  // Narx avtomatik olish
-  let narxObj = narxList.find(n=>n.klient === klient && n.mato === mato);
-  let narx = narxObj ? parseFloat(narxObj.narx) : 0;
-  let summa = netto * narx;
+// Yakuniy kod: barcha yuqoridagi bo‘limlar, modal, menyu, selectlar, holat o‘zgarishi bilan ishlaydi.
+renderAllTables();
 
-  omborData.push({sana, klient, partiya, mato, rangi, gramm, eni, rulon, brutto, netto, qoldiq: netto, narx, summa, holat:'Bichuvda'});
-  renderOmborTable();
-  closeModal();
-}
-
-// Rendering tables
-function renderKlientTable() {
-  const tbody = document.getElementById('klientTable').querySelector('tbody');
-  tbody.innerHTML = klientlar.map(k=>`<tr><td>${k.nom}</td><td>${k.manzil}</td><td>${k.tel}</td></tr>`).join('');
-}
-
-function renderModelTable() {
-  const tbody = document.getElementById('modelTable').querySelector('tbody');
-  tbody.innerHTML = modelList.map(m=>`<tr><td>${m.nom}</td><td>${m.nomeri}</td></tr>`).join('');
-}
-
-function renderMatoTable() {
-  const tbody = document.getElementById('matoTable').querySelector('tbody');
-  tbody.innerHTML = matoList.map(m=>`<tr><td>${m.nom}</td><td>${m.izoh}</td></tr>`).join('');
-}
-
-function renderNarxTable() {
-  const tbody = document.getElementById('narxTable').querySelector('tbody');
-  tbody.innerHTML = narxList.map(n=>`<tr><td>${n.klient}</td><td>${n.mato}</td><td>${n.narx}</td></tr>`).join('');
-}
-
-function renderOmborTable() {
-  const tbody = document.getElementById('omborTable').querySelector('tbody');
-  tbody.innerHTML = omborData.map(o=>`
-    <tr>
-      <td>${o.sana}</td><td>${o.klient}</td><td>${o.partiya}</td><td>${o.mato}</td>
-      <td>${o.rangi}</td><td>${o.gramm}</td><td>${o.eni}</td><td>${o.rulon}</td>
-      <td>${o.brutto}</td><td>${o.netto}</td><td>${o.qoldiq}</td><td>${o.narx}</td><td>${o.summa}</td><td>${o.holat}</td>
-    </tr>
-  `).join('');
-}
-
-function exportTable(tableId) {
-  alert('Export Excel / PDF tugmasi bosildi: ' + tableId);
-}

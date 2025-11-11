@@ -1,198 +1,55 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bichuv ERP Dasturi</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bichuv ERP Dasturi</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="sidebar" class="sidebar hidden">
-    <button id="sidebarToggle">☰</button>
-    <ul>
-      <li onclick="showPage('ombor')">Ombor</li>
-      <li onclick="showPage('buyurtma')">Buyurtma</li>
-      <li onclick="showPage('bichuv')">Bichuv</li>
-      <li onclick="showPage('kirim')">Kirim</li>
-      <li onclick="showPage('hisobot')">Hisobot</li>
-      <li onclick="showPage('klient')">Klient</li>
-      <li onclick="showPage('model')">Model</li>
-      <li onclick="showPage('mato')">Mato turi</li>
-      <li onclick="showPage('narx')">Narx</li>
-    </ul>
-  </div>
 
-  <main>
-    <h1>Bichuv ERP Dasturi</h1>
+<!-- Chap menyu -->
+<div class="sidebar">
+  <button class="menu-toggle">☰ Menyu</button>
+  <ul class="menu">
+    <li onclick="showPage('ombor')">🧵 Ombor</li>
+    <li onclick="showPage('buyurtma')">📋 Buyurtma</li>
+    <li onclick="showPage('bichuv')">✂️ Bichuv</li>
+    <li onclick="showPage('kirim')">💰 Kirim</li>
+    <li onclick="showPage('hisobot')">📊 Hisobot</li>
+    <li onclick="showPage('klient')">👤 Klient</li>
+    <li onclick="showPage('model')">🏷️ Model</li>
+    <li onclick="showPage('mato')">🧵 Mato turi</li>
+    <li onclick="showPage('narx')">💵 Narx</li>
+  </ul>
+</div>
 
-    <!-- Ombor -->
-    <section id="ombor" class="page active">
-      <h2>Ombor</h2>
-      <button onclick="openModal('ombor')">+ Qo'shish</button>
-      <input type="text" id="filterOmbor" placeholder="Filter..." oninput="renderOmborTable()">
-      <table id="omborTable">
-        <thead>
-          <tr>
-            <th>Sana</th><th>Klient</th><th>Partiya</th><th>Mato</th><th>Rangi</th>
-            <th>Grammaj</th><th>Eni</th><th>Rulon</th><th>Brutto</th><th>Netto</th>
-            <th>Qoldiq</th><th>Narx</th><th>Summa</th><th>Holat</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-        <tfoot>
-          <tr>
-            <td colspan="9">Total:</td>
-            <td id="totalNetto">0</td>
-            <td id="totalQoldiq">0</td>
-            <td></td>
-            <td id="totalSumma">0</td>
-            <td></td>
-          </tr>
-        </tfoot>
-      </table>
-      <button onclick="exportTable('omborTable')">Export Excel / PDF</button>
-    </section>
+<div class="content">
+  <h1>Bichuv ERP Dasturi</h1>
 
-    <!-- Buyurtma -->
-    <section id="buyurtma" class="page hidden">
-      <h2>Buyurtma</h2>
-      <button onclick="openModal('buyurtma')">+ Qo'shish</button>
-      <input type="text" id="filterBuyurtma" placeholder="Filter..." oninput="renderBuyurtmaTable()">
-      <table id="buyurtmaTable">
-        <thead>
-          <tr>
-            <th>Sana</th><th>Buyurtma nomeri</th><th>Klient</th><th>Partiya</th><th>Model nomi</th>
-            <th>Model nomeri</th><th>Razmeri</th><th>Kg</th><th>Soni</th><th>Bichilgan</th><th>Farqi</th><th>Holat</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-        <tfoot>
-          <tr>
-            <td colspan="7">Total:</td>
-            <td id="totalKg">0</td>
-            <td id="totalBuyurtmaSon">0</td>
-            <td id="totalBichilgan">0</td>
-            <td id="totalFarqi">0</td>
-            <td></td>
-          </tr>
-        </tfoot>
-      </table>
-      <button onclick="exportTable('buyurtmaTable')">Export Excel / PDF</button>
-    </section>
-
-    <!-- Bichuv -->
-    <section id="bichuv" class="page hidden">
-      <h2>Bichuv</h2>
-      <button onclick="openModal('bichuv')">+ Qo'shish</button>
-      <input type="text" id="filterBichuv" placeholder="Filter..." oninput="renderBichuvTable()">
-      <table id="bichuvTable">
-        <thead>
-          <tr>
-            <th>Sana</th><th>Buyurtma nomeri</th><th>Partiya</th><th>Model nomi</th>
-            <th>Model nomeri</th><th>Razmer</th><th>Kg</th><th>Bichuv Soni</th><th>Holat</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-        <tfoot>
-          <tr>
-            <td colspan="6">Total:</td>
-            <td id="totalBichuvKg">0</td>
-            <td id="totalBichuvSon">0</td>
-            <td></td>
-          </tr>
-        </tfoot>
-      </table>
-      <button onclick="exportTable('bichuvTable')">Export Excel / PDF</button>
-    </section>
-
-    <!-- Kirim -->
-    <section id="kirim" class="page hidden">
-      <h2>Kirim (To‘lovlar)</h2>
-      <button onclick="openModal('kirim')">+ Qo'shish</button>
-      <input type="text" id="filterKirim" placeholder="Filter..." oninput="renderKirimTable()">
-      <table id="kirimTable">
-        <thead>
-          <tr>
-            <th>Sana</th><th>Klient</th><th>Summa</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-        <tfoot>
-          <tr>
-            <td colspan="2">Total:</td>
-            <td id="totalKirim">0</td>
-          </tr>
-        </tfoot>
-      </table>
-      <button onclick="exportTable('kirimTable')">Export Excel / PDF</button>
-    </section>
-
-    <!-- Hisobot -->
-    <section id="hisobot" class="page hidden">
-      <h2>Hisobot</h2>
-      <input type="text" id="filterHisobot" placeholder="Filter..." oninput="renderHisobotTable()">
-      <table id="hisobotTable">
-        <thead>
-          <tr>
-            <th>Klient</th><th>Jami Kg</th><th>Summa</th><th>To‘landi</th><th>Qoldiq</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <button onclick="exportTable('hisobotTable')">Export Excel / PDF</button>
-    </section>
-
-    <!-- Klient -->
-    <section id="klient" class="page hidden">
-      <h2>Klient</h2>
-      <button onclick="openModal('klient')">+ Qo'shish</button>
-      <table id="klientTable">
-        <thead><tr><th>Nom</th><th>Manzil</th><th>Tel</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </section>
-
-    <!-- Model -->
-    <section id="model" class="page hidden">
-      <h2>Model</h2>
-      <button onclick="openModal('model')">+ Qo'shish</button>
-      <table id="modelTable">
-        <thead><tr><th>Model nomi</th><th>Model nomeri</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </section>
-
-    <!-- Mato turi -->
-    <section id="mato" class="page hidden">
-      <h2>Mato turi</h2>
-      <button onclick="openModal('mato')">+ Qo'shish</button>
-      <table id="matoTable">
-        <thead><tr><th>Mato turi</th><th>Izoh</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </section>
-
-    <!-- Narx -->
-    <section id="narx" class="page hidden">
-      <h2>Narx</h2>
-      <button onclick="openModal('narx')">+ Qo'shish</button>
-      <table id="narxTable">
-        <thead><tr><th>Klient</th><th>Mato turi</th><th>Narx</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </section>
-
-  </main>
-
-  <!-- Modal -->
+  <!-- MODAL PANEL -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
-      <form id="modalForm"></form>
+      <div id="modal-body"></div>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <!-- Bo'limlar -->
+  <section id="ombor" class="page active"></section>
+  <section id="buyurtma" class="page hidden"></section>
+  <section id="bichuv" class="page hidden"></section>
+  <section id="kirim" class="page hidden"></section>
+  <section id="hisobot" class="page hidden"></section>
+  <section id="klient" class="page hidden"></section>
+  <section id="model" class="page hidden"></section>
+  <section id="mato" class="page hidden"></section>
+  <section id="narx" class="page hidden"></section>
+
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
+
 

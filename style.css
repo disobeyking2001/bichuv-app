@@ -1,75 +1,58 @@
-/* Umumiy */
 body {
-  font-family: Arial, sans-serif;
   margin: 0;
-  padding: 0;
+  font-family: Arial, sans-serif;
   display: flex;
-  background-color: #f4f4f4;
 }
 
-main {
-  flex: 1;
-  padding: 20px;
-}
-
-/* Sidebar */
 .sidebar {
-  width: 250px;
+  width: 220px;
   background: #2c3e50;
-  color: #fff;
+  color: white;
   height: 100vh;
   position: fixed;
-  left: 0;
-  top: 0;
   overflow-y: auto;
   padding-top: 20px;
-  transition: transform 0.3s ease;
-  z-index: 1000;
 }
 
-.sidebar.hidden {
-  transform: translateX(-260px);
+.sidebar .menu-toggle {
+  display: block;
+  margin: 0 auto 20px;
+  background: #34495e;
+  border: none;
+  color: white;
+  padding: 10px;
+  width: 80%;
+  cursor: pointer;
 }
 
-.sidebar ul {
+.sidebar ul.menu {
   list-style: none;
   padding: 0;
 }
 
-.sidebar ul li {
-  padding: 15px 20px;
-  cursor: pointer;
-  border-bottom: 1px solid #34495e;
-}
-
-.sidebar ul li:hover {
-  background-color: #34495e;
-}
-
-#sidebarToggle {
-  position: absolute;
-  top: 10px;
-  right: -50px;
-  background: #2c3e50;
-  color: white;
-  border: none;
-  padding: 10px;
+.sidebar ul.menu li {
+  padding: 12px 20px;
   cursor: pointer;
 }
 
-/* Page bo‘limlari */
+.sidebar ul.menu li:hover {
+  background: #34495e;
+}
+
+.content {
+  margin-left: 220px;
+  padding: 20px;
+  width: calc(100% - 220px);
+}
+
 .page {
   display: none;
 }
 
 .page.active {
   display: block;
-  background: #fff;
-  padding: 20px;
-  border-radius: 5px;
 }
 
-/* Table */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -77,72 +60,51 @@ table {
 }
 
 table, th, td {
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
 }
 
 th, td {
-  padding: 8px;
-  text-align: left;
+  padding: 6px;
+  text-align: center;
 }
 
-thead {
-  background-color: #3498db;
-  color: #fff;
-}
-
-tfoot {
-  background-color: #ecf0f1;
+tfoot td {
   font-weight: bold;
 }
 
-/* Buttons */
-button {
-  padding: 6px 12px;
-  margin: 5px 0;
-  cursor: pointer;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 3px;
-}
-
-button:hover {
-  background-color: #2980b9;
-}
-
-/* Modal */
 .modal {
-  display: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: fixed;
-  z-index: 2000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.5);
+  left:0; top:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.5);
+}
+
+.modal.hidden {
+  display: none;
 }
 
 .modal-content {
-  background-color: #fefefe;
-  margin: 10% auto;
+  background: white;
   padding: 20px;
-  border-radius: 5px;
-  width: 50%;
-  max-width: 600px;
+  width: 500px;
+  max-width: 95%;
   position: relative;
 }
 
-.modal .close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
+.modal-content .close {
+  position: absolute;
+  top:10px;
+  right:15px;
+  font-size: 20px;
   cursor: pointer;
+  font-weight: bold;
 }
 
-.modal .close:hover,
-.modal .close:focus {
-  color: black;
+button {
+  cursor: pointer;
+  margin: 2px;
+  padding: 6px 12px;
 }
 
