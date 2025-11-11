@@ -37,25 +37,25 @@
     </div>
 
     <!-- Ombor filterlari -->
-<div id="omborFilter" class="ombor-filter">
-  <label>Sana: </label>
-  <input type="date" id="filterSana">
+    <div id="omborFilter" class="ombor-filter">
+      <label>Sana: </label>
+      <input type="date" id="filterSana">
 
-  <label>Klient: </label>
-  <select id="filterKlient"><option value="">Barchasi</option></select>
+      <label>Klient: </label>
+      <select id="filterKlient">
+        <option value="">Barchasi</option>
+        <!-- JS orqali klientlar qo'shiladi -->
+      </select>
 
-  <label>Mato turi: </label>
-  <select id="filterMato"><option value="">Barchasi</option></select>
+      <label>Mato turi: </label>
+      <select id="filterMato">
+        <option value="">Barchasi</option>
+        <!-- JS orqali matolar qo'shiladi -->
+      </select>
 
-  <label>Rangi: </label>
-  <input type="text" id="filterRangi" placeholder="Rangi">
-
-  <label>Grammaj: </label>
-  <input type="number" id="filterGrammaj" placeholder="Grammaj">
-
-  <button onclick="applyOmborFilter()">Filtrlash</button>
-  <button onclick="clearOmborFilter()">Tozalash</button>
-</div>
+      <button onclick="applyOmborFilter()">Filtrlash</button>
+      <button onclick="clearOmborFilter()">Tozalash</button>
+    </div>
 
     <!-- Sahifalar -->
     <section id="ombor" class="page active"></section>
@@ -72,6 +72,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-
-
-
