@@ -1,11 +1,9 @@
-/* Umumiy tana */
 body {
   margin: 0;
   font-family: "Segoe UI", sans-serif;
   background-color: #f5f6fa;
   display: flex;
   height: 100vh;
-  overflow: hidden;
 }
 
 /* Sidebar menyu */
@@ -15,7 +13,6 @@ body {
   color: white;
   padding-top: 15px;
   transition: width 0.3s;
-  flex-shrink: 0;
 }
 
 .sidebar .menu-toggle {
@@ -49,13 +46,11 @@ body {
 .content {
   flex: 1;
   padding: 20px;
-  overflow-y: auto;
-  height: 100vh;
+  overflow-y: auto; /* page bo‘yicha scroll */
 }
 
 h1 {
   color: #2c3e50;
-  margin-top: 0;
 }
 
 button {
@@ -77,12 +72,14 @@ table {
   border-collapse: collapse;
   margin-top: 10px;
   background: white;
+  table-layout: fixed; /* columnlar bir tek kenglikda bo‘lsin */
 }
 
 table th, table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
+  word-wrap: break-word; /* matn kesilmasligi uchun */
 }
 
 table th {
@@ -90,9 +87,23 @@ table th {
   color: white;
 }
 
-.total-row {
-  font-weight: bold;
-  background: #ecf0f1;
+/* Table scrollable qilish (table header doim ko‘rinadi) */
+.page table {
+  display: block;
+}
+
+.page table thead, .page table tbody {
+  display: block;
+}
+
+.page table tbody {
+  max-height: 60vh; /* table body scroll */
+  overflow-y: auto;
+}
+
+.page table th, .page table td {
+  width: 150px; /* kerak bo‘lsa moslang */
+  box-sizing: border-box;
 }
 
 /* Modal oynasi */
@@ -104,7 +115,6 @@ table th {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
 }
 
 .modal.hidden {
@@ -117,16 +127,12 @@ table th {
   border-radius: 8px;
   width: 400px;
   max-width: 90%;
-  position: relative;
 }
 
 .close {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 22px;
+  float: right;
+  font-size: 20px;
   cursor: pointer;
-  font-weight: bold;
 }
 
 input, select {
@@ -135,7 +141,6 @@ input, select {
   margin: 5px 0 10px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
-  box-sizing: border-box;
 }
 
 /* Sahifalar */
@@ -147,26 +152,11 @@ input, select {
   display: block;
 }
 
-/* Filterlar */
-.ombor-filter {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 10px;
-  align-items: flex-end;
-}
-
-.ombor-filter label {
-  margin-right: 5px;
-}
-
 /* Responsiv menyu (mobil uchun) */
 @media(max-width: 768px) {
   .sidebar {
     position: fixed;
     width: 60px;
-    height: 100%;
-    z-index: 100;
   }
 
   .sidebar ul {
@@ -185,9 +175,6 @@ input, select {
   .sidebar .menu-toggle {
     display: block;
   }
-
-  .content {
-    padding-left: 70px;
-  }
 }
+
 
