@@ -159,11 +159,35 @@ function addNarx() {
    5️⃣ OMBOR BO‘LIMI (sizning tartib bilan, total qo‘shildi)
 ============================== */
 /* ==============================
-   5️⃣ OMBOR BO‘LIMI (to‘liq, NaN tuzatilgan)
+   5️⃣ OMBOR BO‘LIMI (filtr bilan)
 ============================== */
 function renderOmbor() {
+  // Filtr qiymatlarini olish
+  let filterSana = document.getElementById("filterSana")?.value || "";
+  let filterKlient = document.getElementById("filterKlient")?.value || "";
+  let filterMato = document.getElementById("filterMato")?.value || "";
+  let filterRangi = document.getElementById("filterRangi")?.value || "";
+  let filterGrammaj = document.getElementById("filterGrammaj")?.value || "";
+
+  // Filtr qilingan ma'lumotlar
+  let data = omborData.filter(o => {
+    return (!filterSana || o.sana === filterSana)
+        && (!filterKlient || o.klient === filterKlient)
+        && (!filterMato || o.mato === filterMato)
+        && (!filterRangi || o.rangi === filterRangi)
+        && (!filterGrammaj || o.grammaj === filterGrammaj);
+  });
+
+  // HTML yaratish
   let html = `<h2>Ombor</h2>
   <button onclick="modalAddOmbor()">+ Qo‘shish</button>
+  <div class="filters">
+    <input type="date" id="filterSana" value="${filterSana}" onchange="renderOmbor()" placeholder="Sana">
+    ${createSelect([""].concat(klientData.map(k=>k.name)), "filterKlient", "Klient tanlang")}
+    ${createSelect([""].concat(matoData.map(m=>m.name)), "filterMato", "Mato tanlang")}
+    <input id="filterRangi" placeholder="Rangi" value="${filterRangi}" oninput="renderOmbor()">
+    <input id="filterGrammaj" placeholder="Grammaj" value="${filterGrammaj}" oninput="renderOmbor()">
+  </div>
   <table>
     <thead>
       <tr>
@@ -189,59 +213,53 @@ function renderOmbor() {
 
   let totalRulon = 0;
   let totalNetto = 0;
-  let totalRibKash = 0;
-  let totalQoldiq = 0;
-  let totalSum = 0;
+  let totalRib = 0;
+  let totalSumma = 0;
 
-  omborData.forEach((o, index) => {
-    let usedKg = bichuvData
-      .filter(b => b.partiya === o.partiya)
-      .reduce((acc, b) => acc + Number(b.netto || 0), 0);
-    let qoldiq = Number(o.netto || 0) - usedKg;
-
+  data.forEach((o, index) => {
     let narx = narxData.find(n => n.klient === o.klient && n.mato === o.mato) || {price: 0};
-    let sum = Number(o.netto || 0) * Number(narx.price || 0);
+    let usedKg = bichuvData.filter(b => b.partiya === o.partiya).reduce((acc,b)=>acc+b.netto,0);
+    let qoldiq = o.netto - usedKg;
+    let holat = usedKg >= o.netto ? "Topshirildi" : "Tayyorlanmoqda";
+    let sum = o.netto * narx.price;
 
-    // Holat
-    let holat = usedKg >= Number(o.netto || 0) ? "Topshirildi" : "Tayyorlanmoqda";
+    totalRulon += Number(o.rulon) || 0;
+    totalNetto += Number(o.netto) || 0;
+    totalRib += Number(o.rib) || 0;
+    totalSumma += sum;
 
     html += `<tr>
-      <td>${o.sana || ""}</td>
-      <td>${o.klient || ""}</td>
-      <td>${o.partiya || ""}</td>
-      <td>${o.mato || ""}</td>
-      <td>${o.rangi || ""}</td>
-      <td>${o.grammaj || ""}</td>
-      <td>${o.eni || ""}</td>
-      <td>${o.rulon || 0}</td>
-      <td>${o.brutto || 0}</td>
-      <td>${o.netto || 0}</td>
-      <td>${o.ribKash || 0}</td>
+      <td>${o.sana}</td>
+      <td>${o.klient}</td>
+      <td>${o.partiya}</td>
+      <td>${o.mato}</td>
+      <td>${o.rangi}</td>
+      <td>${o.grammaj}</td>
+      <td>${o.eni}</td>
+      <td>${o.rulon}</td>
+      <td>${o.brutto}</td>
+      <td>${o.netto}</td>
+      <td>${o.rib || 0}</td>
       <td>${qoldiq}</td>
-      <td>${narx.price || 0}</td>
+      <td>${narx.price}</td>
       <td>${sum}</td>
       <td>${holat}</td>
       <td><button onclick="modalEditOmbor(${index})">O‘zgartirish</button></td>
     </tr>`;
-
-    totalRulon += Number(o.rulon || 0);
-    totalNetto += Number(o.netto || 0);
-    totalRibKash += Number(o.ribKash || 0);
-    totalQoldiq += qoldiq;
-    totalSum += sum;
   });
 
-  // Total row
-  html += `<tr style="font-weight:bold;">
-    <td colspan="7">Jami</td>
+  // Total qatori
+  html += `<tr class="total-row">
+    <td colspan="7">Jami:</td>
     <td>${totalRulon}</td>
-    <td></td>
+    <td>-</td>
     <td>${totalNetto}</td>
-    <td>${totalRibKash}</td>
-    <td>${totalQoldiq}</td>
-    <td></td>
-    <td>${totalSum}</td>
-    <td></td>
+    <td>${totalRib}</td>
+    <td>-</td>
+    <td>-</td>
+    <td>${totalSumma}</td>
+    <td>-</td>
+    <td>-</td>
   </tr>`;
 
   html += `</tbody></table>`;
