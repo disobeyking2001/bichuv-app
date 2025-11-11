@@ -183,27 +183,18 @@ function renderOmbor() {
       </tr>
     </thead>
     <tbody>`;
-  
+
   omborData.forEach((o, index) => {
     let narx = narxData.find(n => n.klient === o.klient && n.mato === o.mato) || {price: 0};
     let sum = o.netto * narx.price;
-    
+
     // Qoldiq: bichuvData dan topilgan kg
     let usedKg = bichuvData.filter(b => b.partiya === o.partiya).reduce((acc,b)=>acc+b.netto,0);
     let qoldiq = o.netto - usedKg;
-    
+
     // Holat
     let holat = usedKg >= o.netto ? "Topshirildi" : "Tayyorlanmoqda";
 
-    // --- renderOmbor ichida, omborData.forEach() tugagandan keyin ---
-let totalNetto = omborData.reduce((acc, o) => acc + Number(o.netto || 0), 0);
-html += `<tr>
-  <td colspan="9" style="text-align:right"><b>Jami Netto:</b></td>
-  <td><b>${totalNetto}</b></td>
-  <td colspan="5"></td>
-</tr>`;
-
-    
     html += `<tr>
       <td>${o.sana}</td>
       <td>${o.klient}</td>
@@ -223,6 +214,23 @@ html += `<tr>
       <td><button onclick="modalEditOmbor(${index})">O‘zgartirish</button></td>
     </tr>`;
   });
+
+  // Total row
+  let totalNetto = omborData.reduce((acc, o) => acc + Number(o.netto || 0), 0);
+  let totalSum = omborData.reduce((acc, o) => {
+    let narx = narxData.find(n => n.klient === o.klient && n.mato === o.mato) || {price: 0};
+    return acc + (o.netto * narx.price);
+  }, 0);
+
+  html += `<tr style="font-weight:bold; background:#f0f0f0;">
+    <td colspan="9" style="text-align:right">Jami:</td>
+    <td>${totalNetto}</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>${totalSum}</td>
+    <td colspan="2"></td>
+  </tr>`;
 
   html += `</tbody></table>`;
   document.getElementById("ombor").innerHTML = html;
