@@ -158,56 +158,26 @@ function addNarx() {
 /* ==============================
    5️⃣ OMBOR BO‘LIMI (sizning tartib bilan)
 ============================== */
-/* ==============================
-   5️⃣ OMBOR BO‘LIMI (Rib/Kash qo‘shildi)
-============================== */
 function renderOmbor() {
   let html = `<h2>Ombor</h2>
   <button onclick="modalAddOmbor()">+ Qo‘shish</button>
   <table>
     <thead>
       <tr>
-        <th>Sana</th>
-        <th>Klient</th>
-        <th>Partiya</th>
-        <th>Mato turi</th>
-        <th>Rangi</th>
-        <th>Grammaj</th>
-        <th>Eni</th>
-        <th>Rulon soni</th>
-        <th>Brutto</th>
-        <th>Netto</th>
-        <th>Rib/Kash</th>
-        <th>Qoldiq</th>
-        <th>Bichuv narxi</th>
-        <th>Summasi</th>
-        <th>Holat</th>
-        <th>O‘zgartirish</th>
+        <th>Nomi</th>
+        <th>Miqdori</th>
+        <th>Birlik</th>
+        <th>Rib/Kash</th> <!-- Yangi qo'shilgan ustun -->
       </tr>
     </thead>
     <tbody>`;
   
-  omborData.forEach((o, i) => {
-    let summasi = o.netto * (o.bichuvNarxi || 0);
-    html += `<tr>
-      <td>${o.sana || ''}</td>
-      <td>${o.klient || ''}</td>
-      <td>${o.partiya || ''}</td>
-      <td>${o.mato || ''}</td>
-      <td>${o.rangi || ''}</td>
-      <td>${o.grammaj || ''}</td>
-      <td>${o.eni || ''}</td>
-      <td>${o.rulon || ''}</td>
-      <td>${o.brutto || ''}</td>
-      <td>${o.netto || ''}</td>
-      <td>${o.ribKash || ''}</td>
-      <td>${o.qoldiq || ''}</td>
-      <td>${o.bichuvNarxi || ''}</td>
-      <td>${summasi}</td>
-      <td>${o.holat || 'Kutilmoqda'}</td>
-      <td><button onclick="modalEditOmbor(${i})">O‘zgartirish</button></td>
-    </tr>`;
-  });
+  omborData.forEach(o => html += `<tr>
+    <td>${o.nomi}</td>
+    <td>${o.miqdor}</td>
+    <td>${o.birlik}</td>
+    <td>${o.ribKash || ''}</td> <!-- Yangi ustun ma'lumotini ko'rsatish -->
+  </tr>`);
 
   html += `</tbody></table>`;
   document.getElementById("ombor").innerHTML = html;
@@ -215,87 +185,21 @@ function renderOmbor() {
 
 function modalAddOmbor() {
   openModal(`<h3>Omborga mahsulot qo‘shish</h3>
-    <input id="omborSana" type="date" placeholder="Sana">
-    <input id="omborKlient" placeholder="Klient">
-    <input id="omborPartiya" placeholder="Partiya">
-    <input id="omborMato" placeholder="Mato turi">
-    <input id="omborRangi" placeholder="Rangi">
-    <input id="omborGrammaj" type="number" placeholder="Grammaj">
-    <input id="omborEni" type="number" placeholder="Eni">
-    <input id="omborRulon" type="number" placeholder="Rulon soni">
-    <input id="omborBrutto" type="number" placeholder="Brutto">
-    <input id="omborNetto" type="number" placeholder="Netto">
-    <input id="omborRibKash" type="number" placeholder="Rib/Kash (kg)">
-    <input id="omborBichuvNarxi" type="number" placeholder="Bichuv narxi">
+    <input id="omborName" placeholder="Nomi">
+    <input id="omborQty" type="number" placeholder="Miqdori">
+    <input id="omborUnit" placeholder="Birlik (kg, dona...)">
+    <input id="omborRibKash" type="number" placeholder="Rib/Kash (kg)"> <!-- Yangi input -->
     <button onclick="addOmbor()">Saqlash</button>`);
 }
 
 function addOmbor() {
-  let sana = omborSana.value,
-      klient = omborKlient.value,
-      partiya = omborPartiya.value,
-      mato = omborMato.value,
-      rangi = omborRangi.value,
-      gramm = omborGrammaj.value,
-      eni = omborEni.value,
-      rulon = omborRulon.value,
-      brutto = omborBrutto.value,
-      netto = omborNetto.value,
-      ribKash = omborRibKash.value,
-      bichuvNarxi = omborBichuvNarxi.value;
-
-  if (!klient || !partiya || !mato || !netto) return alert("Klient, Partiya, Mato turi va Netto kiritilishi shart!");
+  let nomi = omborName.value,
+      miqdor = omborQty.value,
+      birlik = omborUnit.value,
+      ribKash = omborRibKash.value; // Yangi qiymat
   
-  omborData.push({
-    sana, klient, partiya, mato, rangi,
-    gramm: gramm || 0,
-    eni: eni || 0,
-    rulon: rulon || 0,
-    brutto: brutto || 0,
-    netto: netto || 0,
-    ribKash: ribKash || 0,
-    bichuvNarxi: bichuvNarxi || 0,
-    qoldiq: netto || 0,
-    holat: 'Kutilmoqda'
-  });
-  localStorage.setItem("omborData", JSON.stringify(omborData));
-  closeModal();
-  renderOmbor();
-}
-
-function modalEditOmbor(index) {
-  let o = omborData[index];
-  openModal(`<h3>Ombor ma'lumotlarini o‘zgartirish</h3>
-    <input id="omborSana" type="date" value="${o.sana}">
-    <input id="omborKlient" placeholder="Klient" value="${o.klient}">
-    <input id="omborPartiya" placeholder="Partiya" value="${o.partiya}">
-    <input id="omborMato" placeholder="Mato turi" value="${o.mato}">
-    <input id="omborRangi" placeholder="Rangi" value="${o.rangi}">
-    <input id="omborGrammaj" type="number" placeholder="Grammaj" value="${o.gramm}">
-    <input id="omborEni" type="number" placeholder="Eni" value="${o.eni}">
-    <input id="omborRulon" type="number" placeholder="Rulon soni" value="${o.rulon}">
-    <input id="omborBrutto" type="number" placeholder="Brutto" value="${o.brutto}">
-    <input id="omborNetto" type="number" placeholder="Netto" value="${o.netto}">
-    <input id="omborRibKash" type="number" placeholder="Rib/Kash (kg)" value="${o.ribKash}">
-    <input id="omborBichuvNarxi" type="number" placeholder="Bichuv narxi" value="${o.bichuvNarxi}">
-    <button onclick="saveEditOmbor(${index})">Saqlash</button>`);
-}
-
-function saveEditOmbor(index) {
-  let o = omborData[index];
-  o.sana = omborSana.value;
-  o.klient = omborKlient.value;
-  o.partiya = omborPartiya.value;
-  o.mato = omborMato.value;
-  o.rangi = omborRangi.value;
-  o.gramm = omborGrammaj.value || 0;
-  o.eni = omborEni.value || 0;
-  o.rulon = omborRulon.value || 0;
-  o.brutto = omborBrutto.value || 0;
-  o.netto = omborNetto.value || 0;
-  o.ribKash = omborRibKash.value || 0;
-  o.bichuvNarxi = omborBichuvNarxi.value || 0;
-  o.qoldiq = o.netto; // avtomatik yangilash
+  if (!nomi) return alert("Nomini kiriting!");
+  omborData.push({ nomi, miqdor, birlik, ribKash });
   localStorage.setItem("omborData", JSON.stringify(omborData));
   closeModal();
   renderOmbor();
