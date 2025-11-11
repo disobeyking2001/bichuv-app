@@ -186,17 +186,123 @@ function addOmbor() {
    6️⃣ BUYURTMA, BICHUV, KIRIM, HISOBOT (oddiy ko‘rinishda)
 ============================== */
 function renderBuyurtma() {
-  document.getElementById("buyurtma").innerHTML = `<h2>Buyurtmalar</h2><p>Buyurtmalar bo‘limi hozircha tayyorlanmoqda...</p>`;
+  let html = `<h2>Buyurtmalar</h2>
+    <button onclick="modalAddBuyurtma()">+ Buyurtma qo‘shish</button>
+    <table><thead><tr>
+      <th>Klient</th><th>Model</th><th>Mato</th><th>Miqdor</th><th>Narx</th>
+    </tr></thead><tbody>`;
+  buyurtmaData.forEach(b => html += `<tr>
+    <td>${b.klient}</td><td>${b.model}</td><td>${b.mato}</td><td>${b.miqdor}</td><td>${b.narx}</td>
+  </tr>`);
+  html += `</tbody></table>`;
+  document.getElementById("buyurtma").innerHTML = html;
 }
+// --- Buyurtma qo'shish modal ---
+function modalAddBuyurtma() {
+  let html = `<h3>Buyurtma qo‘shish</h3>
+    ${createSelect(klientData.map(k=>k.name), "buyurtmaKlient", "Klient tanlang")}
+    ${createSelect(modelData.map(m=>m.name), "buyurtmaModel", "Model tanlang")}
+    ${createSelect(matoData.map(m=>m.name), "buyurtmaMato", "Mato tanlang")}
+    <input id="buyurtmaQty" type="number" placeholder="Miqdor">
+    <input id="buyurtmaPrice" type="number" placeholder="Narx">
+    <button onclick="addBuyurtma()">Saqlash</button>`;
+  openModal(html);
+}
+
+// --- Buyurtma qo'shish funksiyasi ---
+function addBuyurtma() {
+  let klient = buyurtmaKlient.value;
+  let model = buyurtmaModel.value;
+  let mato = buyurtmaMato.value;
+  let miqdor = buyurtmaQty.value;
+  let narx = buyurtmaPrice.value;
+  if (!klient || !model || !mato || !miqdor || !narx) return alert("To‘liq ma'lumot kiriting!");
+  buyurtmaData.push({klient, model, mato, miqdor, narx});
+  localStorage.setItem("buyurtmaData", JSON.stringify(buyurtmaData));
+  closeModal();
+  renderBuyurtma();
+}
+
+// --- Bichuv qo'shish modal ---
+function modalAddBichuv() {
+  let html = `<h3>Bichuv qo‘shish</h3>
+    ${createSelect(buyurtmaData.map(b=>b.klient), "bichuvKlient", "Klient tanlang")}
+    ${createSelect(modelData.map(m=>m.name), "bichuvModel", "Model tanlang")}
+    ${createSelect(matoData.map(m=>m.name), "bichuvMato", "Mato tanlang")}
+    <input id="bichuvQty" type="number" placeholder="Miqdor">
+    <button onclick="addBichuv()">Saqlash</button>`;
+  openModal(html);
+}
+
+// --- Bichuv qo'shish funksiyasi ---
+function addBichuv() {
+  let klient = bichuvKlient.value;
+  let model = bichuvModel.value;
+  let mato = bichuvMato.value;
+  let miqdor = bichuvQty.value;
+  if (!klient || !model || !mato || !miqdor) return alert("To‘liq ma'lumot kiriting!");
+  bichuvData.push({klient, model, mato, miqdor});
+  localStorage.setItem("bichuvData", JSON.stringify(bichuvData));
+  closeModal();
+  renderBichuv();
+}
+
+// --- Bichuv jadvalini yangilash ---
 function renderBichuv() {
-  document.getElementById("bichuv").innerHTML = `<h2>Bichuv</h2><p>Bichuv jarayoni bo‘limi tayyorlanmoqda...</p>`;
+  let html = `<h2>Bichuv jarayoni</h2>
+  <button onclick="modalAddBichuv()">+ Qo‘shish</button>
+  <table><thead><tr><th>Klient</th><th>Model</th><th>Mato</th><th>Miqdor</th></tr></thead><tbody>`;
+  bichuvData.forEach(b => html += `<tr><td>${b.klient}</td><td>${b.model}</td><td>${b.mato}</td><td>${b.miqdor}</td></tr>`);
+  html += `</tbody></table>`;
+  document.getElementById("bichuv").innerHTML = html;
 }
+
+// --- Kirim qo‘shish modal ---
+function modalAddKirim() {
+  let html = `<h3>Kirim qo‘shish</h3>
+    ${createSelect(omborData.map(o=>o.nomi), "kirimOmbor", "Ombordagi mahsulotni tanlang")}
+    <input id="kirimQty" type="number" placeholder="Miqdor">
+    <button onclick="addKirim()">Saqlash</button>`;
+  openModal(html);
+}
+
+// --- Kirim qo‘shish funksiyasi ---
+function addKirim() {
+  let nomi = kirimOmbor.value;
+  let miqdor = kirimQty.value;
+  if (!nomi || !miqdor) return alert("To‘liq ma'lumot kiriting!");
+  kirimData.push({ nomi, miqdor });
+  localStorage.setItem("kirimData", JSON.stringify(kirimData));
+  closeModal();
+  renderKirim();
+}
+
+// --- Kirim jadvalini yangilash ---
 function renderKirim() {
-  document.getElementById("kirim").innerHTML = `<h2>Kirim</h2><p>Kirim bo‘limi hozircha tayyorlanmoqda...</p>`;
+  let html = `<h2>Kirim</h2>
+  <button onclick="modalAddKirim()">+ Qo‘shish</button>
+  <table><thead><tr><th>Mahsulot</th><th>Miqdor</th></tr></thead><tbody>`;
+  kirimData.forEach(k => html += `<tr><td>${k.nomi}</td><td>${k.miqdor}</td></tr>`);
+  html += `</tbody></table>`;
+  document.getElementById("kirim").innerHTML = html;
 }
+
+// --- Hisobot bo‘limi ---
 function renderHisobot() {
-  document.getElementById("hisobot").innerHTML = `<h2>Hisobot</h2><p>Umumiy hisobotlar bu yerda ko‘rsatiladi.</p>`;
+  // Umumiy hisoblar
+  let jamiOmbor = omborData.reduce((sum,o) => sum + (+o.miqdor || 0), 0);
+  let jamiKirim = kirimData.reduce((sum,k) => sum + (+k.miqdor || 0), 0);
+  let jamiBuyurtma = buyurtmaData.length;
+  
+  let html = `<h2>Hisobot</h2>
+    <p>Ombordagi jami mahsulotlar: <b>${jamiOmbor}</b></p>
+    <p>Kirim qilingan jami mahsulotlar: <b>${jamiKirim}</b></p>
+    <p>Buyurtmalar soni: <b>${jamiBuyurtma}</b></p>
+    <p>Hisobotlarni batafsil ko‘rish va chop etish funksiyalari keyinchalik qo‘shiladi.</p>`;
+  
+  document.getElementById("hisobot").innerHTML = html;
 }
+
 
 // --- Dastur ishga tushganda ---
 renderAllTables();
