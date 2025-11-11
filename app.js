@@ -156,9 +156,6 @@ function addNarx() {
 }
 
 /* ==============================
-   5️⃣ OMBOR BO‘LIMI (sizning tartib bilan)
-============================== */
-/* ==============================
    5️⃣ OMBOR BO‘LIMI (sizning tartib bilan, total qo‘shildi)
 ============================== */
 function renderOmbor() {
@@ -190,14 +187,14 @@ function renderOmbor() {
   omborData.forEach((o, index) => {
     let narx = narxData.find(n => n.klient === o.klient && n.mato === o.mato) || {price: 0};
     let sum = o.netto * narx.price;
-    
+
     // Qoldiq: bichuvData dan topilgan kg
     let usedKg = bichuvData.filter(b => b.partiya === o.partiya).reduce((acc,b)=>acc+b.netto,0);
     let qoldiq = o.netto - usedKg;
-    
+
     // Holat
     let holat = usedKg >= o.netto ? "Topshirildi" : "Tayyorlanmoqda";
-    
+
     html += `<tr>
       <td>${o.sana}</td>
       <td>${o.klient}</td>
@@ -206,9 +203,9 @@ function renderOmbor() {
       <td>${o.rangi}</td>
       <td>${o.grammaj}</td>
       <td>${o.eni}</td>
-      <td>${o.rulon}</td>
-      <td>${o.brutto}</td>
-      <td>${o.netto}</td>
+      <td>${o.rulon || 0}</td>
+      <td>${o.brutto || 0}</td>
+      <td>${o.netto || 0}</td>
       <td>${o.ribKash || 0}</td>
       <td>${qoldiq}</td>
       <td>${narx.price}</td>
@@ -219,21 +216,26 @@ function renderOmbor() {
   });
 
   // Total qatori
-  let totalBrutto = omborData.reduce((acc, o) => acc + Number(o.brutto || 0), 0);
-  let totalRulon = omborData.reduce((acc, o) => acc + Number(o.rulon || 0), 0);
-  let totalNetto = omborData.reduce((acc, o) => acc + Number(o.netto || 0), 0);
-  let totalRibKash = omborData.reduce((acc, o) => acc + Number(o.ribKash || 0), 0);
-  let totalSum = omborData.reduce((acc, o) => {
-    let narx = narxData.find(n => n.klient === o.klient && n.mato === o.mato) || {price: 0};
+  let totalRulon = omborData.reduce((acc,o)=>acc + Number(o.rulon || 0),0);
+  let totalBrutto = omborData.reduce((acc,o)=>acc + Number(o.brutto || 0),0);
+  let totalNetto = omborData.reduce((acc,o)=>acc + Number(o.netto || 0),0);
+  let totalRibKash = omborData.reduce((acc,o)=>acc + Number(o.ribKash || 0),0);
+  let totalQoldiq = omborData.reduce((acc,o)=>{
+    let usedKg = bichuvData.filter(b => b.partiya === o.partiya).reduce((acc,b)=>acc+b.netto,0);
+    return acc + (o.netto - usedKg);
+  },0);
+  let totalSum = omborData.reduce((acc,o)=>{
+    let narx = narxData.find(n=>n.klient===o.klient && n.mato===o.mato) || {price:0};
     return acc + (o.netto * narx.price);
-  }, 0);
+  },0);
 
   html += `<tr style="font-weight:bold; background:#f0f0f0;">
-    <td colspan="8" style="text-align:right">Jami:</td>
+    <td colspan="7" style="text-align:right">Jami:</td>
+    <td>${totalRulon}</td>
     <td>${totalBrutto}</td>
     <td>${totalNetto}</td>
     <td>${totalRibKash}</td>
-    <td></td>
+    <td>${totalQoldiq}</td>
     <td></td>
     <td>${totalSum}</td>
     <td colspan="2"></td>
@@ -242,6 +244,7 @@ function renderOmbor() {
   html += `</tbody></table>`;
   document.getElementById("ombor").innerHTML = html;
 }
+
 
 function modalAddOmbor() {
   let html = `<h3>Omborga mahsulot qo‘shish</h3>
