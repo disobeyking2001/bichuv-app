@@ -159,35 +159,28 @@ function addNarx() {
    5️⃣ OMBOR BO‘LIMI (sizning tartib bilan, total qo‘shildi)
 ============================== */
 /* ==============================
-   5️⃣ OMBOR BO‘LIMI (filtr bilan)
+   5️⃣ OMBOR BO‘LIMI (filter bilan)
 ============================== */
 function renderOmbor() {
-  // Filtr qiymatlarini olish
+  // Filter qiymatlarini olish
   let filterSana = document.getElementById("filterSana")?.value || "";
   let filterKlient = document.getElementById("filterKlient")?.value || "";
   let filterMato = document.getElementById("filterMato")?.value || "";
   let filterRangi = document.getElementById("filterRangi")?.value || "";
   let filterGrammaj = document.getElementById("filterGrammaj")?.value || "";
 
-  // Filtr qilingan ma'lumotlar
-  let data = omborData.filter(o => {
-    return (!filterSana || o.sana === filterSana)
-        && (!filterKlient || o.klient === filterKlient)
-        && (!filterMato || o.mato === filterMato)
-        && (!filterRangi || o.rangi === filterRangi)
-        && (!filterGrammaj || o.grammaj === filterGrammaj);
-  });
-
-  // HTML yaratish
   let html = `<h2>Ombor</h2>
   <button onclick="modalAddOmbor()">+ Qo‘shish</button>
-  <div class="filters">
-    <input type="date" id="filterSana" value="${filterSana}" onchange="renderOmbor()" placeholder="Sana">
-    ${createSelect([""].concat(klientData.map(k=>k.name)), "filterKlient", "Klient tanlang")}
-    ${createSelect([""].concat(matoData.map(m=>m.name)), "filterMato", "Mato tanlang")}
+
+  <!-- Filterlar -->
+  <div class="ombor-filters">
+    <input type="date" id="filterSana" value="${filterSana}" onchange="renderOmbor()">
+    ${createSelect([""].concat(klientData.map(k=>k.name)),"filterKlient","Klient", filterKlient)}
+    ${createSelect([""].concat(matoData.map(m=>m.name)),"filterMato","Mato turi", filterMato)}
     <input id="filterRangi" placeholder="Rangi" value="${filterRangi}" oninput="renderOmbor()">
     <input id="filterGrammaj" placeholder="Grammaj" value="${filterGrammaj}" oninput="renderOmbor()">
   </div>
+
   <table>
     <thead>
       <tr>
@@ -211,22 +204,21 @@ function renderOmbor() {
     </thead>
     <tbody>`;
 
-  let totalRulon = 0;
-  let totalNetto = 0;
-  let totalRib = 0;
-  let totalSumma = 0;
+  // Filterlangan ma'lumotlar
+  let filtered = omborData.filter(o => 
+    (filterSana === "" || o.sana === filterSana) &&
+    (filterKlient === "" || o.klient === filterKlient) &&
+    (filterMato === "" || o.mato === filterMato) &&
+    (filterRangi === "" || o.rangi.includes(filterRangi)) &&
+    (filterGrammaj === "" || o.grammaj.includes(filterGrammaj))
+  );
 
-  data.forEach((o, index) => {
-    let narx = narxData.find(n => n.klient === o.klient && n.mato === o.mato) || {price: 0};
+  filtered.forEach((o, index) => {
     let usedKg = bichuvData.filter(b => b.partiya === o.partiya).reduce((acc,b)=>acc+b.netto,0);
     let qoldiq = o.netto - usedKg;
-    let holat = usedKg >= o.netto ? "Topshirildi" : "Tayyorlanmoqda";
+    let narx = narxData.find(n => n.klient === o.klient && n.mato === o.mato) || {price:0};
     let sum = o.netto * narx.price;
-
-    totalRulon += Number(o.rulon) || 0;
-    totalNetto += Number(o.netto) || 0;
-    totalRib += Number(o.rib) || 0;
-    totalSumma += sum;
+    let holat = usedKg >= o.netto ? "Topshirildi" : "Tayyorlanmoqda";
 
     html += `<tr>
       <td>${o.sana}</td>
@@ -239,7 +231,7 @@ function renderOmbor() {
       <td>${o.rulon}</td>
       <td>${o.brutto}</td>
       <td>${o.netto}</td>
-      <td>${o.rib || 0}</td>
+      <td>${o.rib || ""}</td>
       <td>${qoldiq}</td>
       <td>${narx.price}</td>
       <td>${sum}</td>
@@ -249,22 +241,35 @@ function renderOmbor() {
   });
 
   // Total qatori
+  let totalRulon = filtered.reduce((a,o)=>a + Number(o.rulon||0),0);
+  let totalNetto = filtered.reduce((a,o)=>a + Number(o.netto||0),0);
+  let totalSum = filtered.reduce((a,o)=>a + Number(o.netto*(narxData.find(n=>n.klient===o.klient && n.mato===o.mato)?.price || 0)),0);
+
   html += `<tr class="total-row">
     <td colspan="7">Jami:</td>
     <td>${totalRulon}</td>
-    <td>-</td>
+    <td></td>
     <td>${totalNetto}</td>
-    <td>${totalRib}</td>
-    <td>-</td>
-    <td>-</td>
-    <td>${totalSumma}</td>
-    <td>-</td>
-    <td>-</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>${totalSum}</td>
+    <td></td>
+    <td></td>
   </tr>`;
 
   html += `</tbody></table>`;
   document.getElementById("ombor").innerHTML = html;
 }
+
+// Yordamchi select funksiyasi filter uchun default qiymat bilan
+function createSelect(options, id, placeholder, selectedValue="") {
+  let html = `<select id="${id}" onchange="renderOmbor()"><option value="">${placeholder}</option>`;
+  options.forEach(o => html += `<option value="${o}" ${o===selectedValue ? "selected" : ""}>${o}</option>`);
+  html += `</select>`;
+  return html;
+}
+
 
 
 function modalAddOmbor() {
