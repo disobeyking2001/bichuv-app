@@ -156,7 +156,7 @@ function addNarx() {
 }
 
 /* ==============================
-   5️⃣ OMBOR BO‘LIMI (total dinamik)
+   5️⃣ OMBOR BO‘LIMI (total bilan, Rib/Kash, Qoldiq NaN bo'lmaydi)
 ============================== */
 function renderOmbor(filteredData) {
   // Agar filtrlangan ma'lumot berilmasa, barcha omborData ishlatiladi
@@ -189,12 +189,12 @@ function renderOmbor(filteredData) {
 
   data.forEach((o, index) => {
     let narx = narxData.find(n => n.klient === o.klient && n.mato === o.mato) || {price: 0};
-    let sum = o.netto * narx.price;
+    let sum = (Number(o.netto) || 0) * (Number(narx.price) || 0);
 
-    let usedKg = bichuvData.filter(b => b.partiya === o.partiya).reduce((acc,b)=>acc+b.netto,0);
-    let qoldiq = o.netto - usedKg;
+    let usedKg = bichuvData.filter(b => b.partiya === o.partiya).reduce((acc,b)=>acc+Number(b.netto||0),0);
+    let qoldiq = (Number(o.netto)||0) - usedKg;
 
-    let holat = usedKg >= o.netto ? "Topshirildi" : "Tayyorlanmoqda";
+    let holat = usedKg >= (Number(o.netto)||0) ? "Topshirildi" : "Tayyorlanmoqda";
 
     html += `<tr>
       <td>${o.sana}</td>
@@ -204,37 +204,38 @@ function renderOmbor(filteredData) {
       <td>${o.rangi}</td>
       <td>${o.grammaj}</td>
       <td>${o.eni}</td>
-      <td>${o.rulon}</td>
-      <td>${o.brutto}</td>
-      <td>${o.netto}</td>
-      <td>${o.ribKash || ""}</td>
+      <td>${o.rulon || 0}</td>
+      <td>${o.brutto || 0}</td>
+      <td>${o.netto || 0}</td>
+      <td>${o.ribKash || 0}</td>
       <td>${qoldiq}</td>
-      <td>${narx.price}</td>
+      <td>${narx.price || 0}</td>
       <td>${sum}</td>
       <td>${holat}</td>
       <td><button onclick="modalEditOmbor(${index})">O‘zgartirish</button></td>
     </tr>`;
   });
 
-  // Total qatori (dinamik)
+  // Total qatori
   let totalRulon = data.reduce((a,o)=>a + Number(o.rulon||0),0);
   let totalBrutto = data.reduce((a,o)=>a + Number(o.brutto||0),0);
   let totalNetto = data.reduce((a,o)=>a + Number(o.netto||0),0);
+  let totalRib = data.reduce((a,o)=>a + Number(o.ribKash||0),0);
   let totalQoldiq = data.reduce((a,o)=> {
-    let usedKg = bichuvData.filter(b => b.partiya === o.partiya).reduce((acc,b)=>acc+b.netto,0);
-    return a + (o.netto - usedKg);
+    let usedKg = bichuvData.filter(b => b.partiya === o.partiya).reduce((acc,b)=>acc+Number(b.netto||0),0);
+    return a + ((Number(o.netto)||0) - usedKg);
   },0);
   let totalSum = data.reduce((a,o)=> {
     let price = narxData.find(n=>n.klient===o.klient && n.mato===o.mato)?.price || 0;
-    return a + (o.netto*price);
+    return a + ((Number(o.netto)||0) * price);
   },0);
 
-  html += `<tr class="total-row">
+  html += `<tr class="total-row" style="font-weight:bold">
     <td colspan="7">Jami:</td>
     <td>${totalRulon}</td>
     <td>${totalBrutto}</td>
     <td>${totalNetto}</td>
-    <td></td>
+    <td>${totalRib}</td>
     <td>${totalQoldiq}</td>
     <td></td>
     <td>${totalSum}</td>
