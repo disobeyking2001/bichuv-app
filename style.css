@@ -1,18 +1,21 @@
+/* ====== Umumiy sozlamalar ====== */
 body {
   margin: 0;
   font-family: "Segoe UI", sans-serif;
   background-color: #f5f6fa;
   display: flex;
   height: 100vh;
+  overflow: hidden;
 }
 
-/* Sidebar menyu */
+/* ====== Sidebar menyu ====== */
 .sidebar {
   width: 220px;
   background: #2c3e50;
   color: white;
   padding-top: 15px;
   transition: width 0.3s;
+  flex-shrink: 0;
 }
 
 .sidebar .menu-toggle {
@@ -35,24 +38,26 @@ body {
 .sidebar ul li {
   padding: 12px 20px;
   cursor: pointer;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar ul li:hover {
   background: #1abc9c;
 }
 
-/* Asosiy kontent */
+/* ====== Asosiy kontent ====== */
 .content {
   flex: 1;
   padding: 20px;
-  overflow-y: auto; /* page bo‘yicha scroll */
+  overflow-y: auto;
+  position: relative;
 }
 
 h1 {
   color: #2c3e50;
 }
 
+/* ====== Tugmalar ====== */
 button {
   background: #1abc9c;
   border: none;
@@ -67,51 +72,91 @@ button:hover {
   background: #16a085;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-  background: white;
-  table-layout: fixed; /* columnlar bir tek kenglikda bo‘lsin */
+/* ====== Filter formasi ====== */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
-table th, table td {
+.filters label {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.filters select,
+.filters input {
+  padding: 6px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* ====== Jadval dizayni ====== */
+.page table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  table-layout: fixed;
+}
+
+.page table th,
+.page table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
-  word-wrap: break-word; /* matn kesilmasligi uchun */
-}
-
-table th {
-  background: #34495e;
-  color: white;
-}
-
-/* Table scrollable qilish (table header doim ko‘rinadi) */
-.page table {
-  display: block;
-}
-
-.page table thead, .page table tbody {
-  display: block;
-}
-
-.page table tbody {
-  max-height: 60vh; /* table body scroll */
-  overflow-y: auto;
-}
-
-.page table th, .page table td {
-  width: 150px; /* kerak bo‘lsa moslang */
+  word-wrap: break-word;
   box-sizing: border-box;
 }
 
-/* Modal oynasi */
+.page table th {
+  background: #34495e;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Jadval scroll */
+.page table tbody {
+  display: block;
+  max-height: 55vh;
+  overflow-y: auto;
+}
+
+.page table thead,
+.page table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* ====== Total qatori ====== */
+.total-row {
+  margin-top: 10px;
+  padding: 10px;
+  background: #ecf0f1;
+  border-radius: 5px;
+  font-weight: bold;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+  color: #2c3e50;
+}
+
+.total-row span {
+  min-width: 140px;
+}
+
+/* ====== Modal oynasi ====== */
 .modal {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.4);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,7 +180,9 @@ table th {
   cursor: pointer;
 }
 
-input, select {
+/* ====== Inputlar ====== */
+input,
+select {
   width: 100%;
   padding: 8px;
   margin: 5px 0 10px 0;
@@ -143,7 +190,7 @@ input, select {
   border-radius: 5px;
 }
 
-/* Sahifalar */
+/* ====== Sahifalar ====== */
 .page {
   display: none;
 }
@@ -152,11 +199,13 @@ input, select {
   display: block;
 }
 
-/* Responsiv menyu (mobil uchun) */
-@media(max-width: 768px) {
+/* ====== Responsiv menyu ====== */
+@media (max-width: 768px) {
   .sidebar {
     position: fixed;
     width: 60px;
+    height: 100vh;
+    z-index: 1000;
   }
 
   .sidebar ul {
@@ -175,6 +224,12 @@ input, select {
   .sidebar .menu-toggle {
     display: block;
   }
+
+  .content {
+    margin-left: 60px;
+  }
+
+  .total-row {
+    flex-direction: column;
+  }
 }
-
-
