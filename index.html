@@ -8,7 +8,7 @@
 </head>
 <body>
 
-  <!-- ===== Sidebar menyu ===== -->
+  <!-- Sidebar -->
   <div class="sidebar">
     <button class="menu-toggle">☰ Menyu</button>
     <ul class="menu">
@@ -24,99 +24,68 @@
     </ul>
   </div>
 
-  <!-- ===== Asosiy kontent ===== -->
+  <!-- Main content -->
   <div class="content">
     <h1>Bichuv ERP Dasturi</h1>
 
-    <!-- ===== Ombor bo‘limi ===== -->
-    <section id="ombor" class="page active">
-      <h2>🧾 Ombor</h2>
+    <!-- Ombor filters -->
+    <div class="filters">
+      <label>Sana:</label>
+      <input type="date" id="filterSana">
 
-      <div class="filters">
-        <label for="filterSana">Sana:</label>
-        <input type="date" id="filterSana">
+      <label>Klient:</label>
+      <select id="filterKlient">
+        <option value="">Barchasi</option>
+      </select>
 
-        <label for="filterKlient">Klient:</label>
-        <select id="filterKlient">
-          <option value="">Barchasi</option>
-        </select>
+      <label>Mato turi:</label>
+      <select id="filterMato">
+        <option value="">Barchasi</option>
+      </select>
+    </div>
 
-        <label for="filterMato">Mato turi:</label>
-        <select id="filterMato">
-          <option value="">Barchasi</option>
-        </select>
-
-        <button id="addItemBtn">+ Qo‘shish</button>
-      </div>
-
+    <!-- Ombor jadvali -->
+    <div class="table-container">
       <table id="omborTable">
         <thead>
           <tr>
-            <th style="width:5%">#</th>
-            <th style="width:20%">Model nomi</th>
-            <th style="width:15%">Kategoriya</th>
-            <th style="width:10%">O‘lcham</th>
-            <th style="width:10%">Rang</th>
-            <th style="width:10%">Soni (dona)</th>
-            <th style="width:15%">Narx (so‘m)</th>
-            <th style="width:15%">Jami (so‘m)</th>
+            <th>ID</th>
+            <th>Sana</th>
+            <th>Klient</th>
+            <th>Mato turi</th>
+            <th>Miqdor</th>
+            <th>Narx</th>
           </tr>
         </thead>
         <tbody>
-          <!-- JS orqali ma’lumotlar qo‘shiladi -->
+          <tr>
+            <td>1</td>
+            <td>2025-11-13</td>
+            <td>Ali</td>
+            <td>Paxta</td>
+            <td>50</td>
+            <td>1000</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>2025-11-12</td>
+            <td>Vali</td>
+            <td>Jun</td>
+            <td>30</td>
+            <td>1500</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>2025-11-11</td>
+            <td>Hasan</td>
+            <td>Paxta</td>
+            <td>70</td>
+            <td>2000</td>
+          </tr>
         </tbody>
       </table>
-
-      <div class="total-row" id="omborTotals">
-        <span>Umumiy son: <strong id="totalQuantity">0</strong> dona</span>
-        <span>Umumiy qiymat: <strong id="totalValue">0</strong> so‘m</span>
-      </div>
-
-      <!-- Modal oynasi -->
-      <div id="addItemModal" class="modal hidden">
-        <div class="modal-content">
-          <span class="close" id="closeModal">&times;</span>
-          <h2>Mahsulot qo‘shish</h2>
-
-          <label>Model nomi:</label>
-          <input type="text" id="modelName" placeholder="Masalan: Sport T-shirt">
-
-          <label>Kategoriya:</label>
-          <select id="itemCategory">
-            <option value="Futbolka">Futbolka</option>
-            <option value="Hoodie">Hoodie</option>
-            <option value="Kurtka">Kurtka</option>
-          </select>
-
-          <label>O‘lcham:</label>
-          <input type="text" id="size" placeholder="Masalan: M, L, XL">
-
-          <label>Rang:</label>
-          <input type="text" id="color" placeholder="Masalan: Qora">
-
-          <label>Soni (dona):</label>
-          <input type="number" id="quantity" placeholder="Masalan: 100">
-
-          <label>Narx (so‘m):</label>
-          <input type="number" id="price" placeholder="Masalan: 150000">
-
-          <button id="saveItemBtn">Saqlash</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== Bo‘sh sahifalar ===== -->
-    <section id="buyurtma" class="page hidden"></section>
-    <section id="bichuv" class="page hidden"></section>
-    <section id="kirim" class="page hidden"></section>
-    <section id="hisobot" class="page hidden"></section>
-    <section id="klient" class="page hidden"></section>
-    <section id="model" class="page hidden"></section>
-    <section id="mato" class="page hidden"></section>
-    <section id="narx" class="page hidden"></section>
+    </div>
   </div>
 
-  <!-- JS fayl -->
-  <script src="app.js"></script>
 </body>
 </html>
