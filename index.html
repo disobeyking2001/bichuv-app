@@ -37,20 +37,18 @@
     </div>
 
     <!-- Ombor filterlari -->
-    <div id="omborFilter" class="ombor-filter">
+    <div id="omborFilter" class="ombor-filter hidden">
       <label>Sana: </label>
       <input type="date" id="filterSana" onchange="renderOmbor()">
 
       <label>Klient: </label>
       <select id="filterKlient" onchange="renderOmbor()">
         <option value="">Barchasi</option>
-        <!-- JS orqali klientlar qo'shiladi -->
       </select>
 
       <label>Mato turi: </label>
       <select id="filterMato" onchange="renderOmbor()">
         <option value="">Barchasi</option>
-        <!-- JS orqali matolar qo'shiladi -->
       </select>
 
       <button onclick="applyOmborFilter()">Filtrlash</button>
