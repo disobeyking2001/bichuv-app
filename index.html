@@ -8,7 +8,7 @@
 </head>
 <body>
 
-  <!-- Chap menyu -->
+  <!-- ===== Sidebar menyu ===== -->
   <div class="sidebar">
     <button class="menu-toggle">☰ Menyu</button>
     <ul class="menu">
@@ -24,39 +24,88 @@
     </ul>
   </div>
 
-  <!-- Asosiy kontent -->
+  <!-- ===== Asosiy kontent ===== -->
   <div class="content">
     <h1>Bichuv ERP Dasturi</h1>
 
-    <!-- Modal -->
-    <div id="modal" class="modal hidden">
-      <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <div id="modal-body"></div>
+    <!-- ===== Ombor bo‘limi ===== -->
+    <section id="ombor" class="page active">
+      <h2>🧾 Ombor</h2>
+
+      <div class="filters">
+        <label for="filterSana">Sana:</label>
+        <input type="date" id="filterSana">
+
+        <label for="filterKlient">Klient:</label>
+        <select id="filterKlient">
+          <option value="">Barchasi</option>
+        </select>
+
+        <label for="filterMato">Mato turi:</label>
+        <select id="filterMato">
+          <option value="">Barchasi</option>
+        </select>
+
+        <button id="addItemBtn">+ Qo‘shish</button>
       </div>
-    </div>
 
-    <!-- Ombor filterlari -->
-    <div id="omborFilter" class="ombor-filter hidden">
-      <label>Sana: </label>
-      <input type="date" id="filterSana" onchange="renderOmbor()">
+      <table id="omborTable">
+        <thead>
+          <tr>
+            <th style="width:5%">#</th>
+            <th style="width:20%">Model nomi</th>
+            <th style="width:15%">Kategoriya</th>
+            <th style="width:10%">O‘lcham</th>
+            <th style="width:10%">Rang</th>
+            <th style="width:10%">Soni (dona)</th>
+            <th style="width:15%">Narx (so‘m)</th>
+            <th style="width:15%">Jami (so‘m)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- JS orqali ma’lumotlar qo‘shiladi -->
+        </tbody>
+      </table>
 
-      <label>Klient: </label>
-      <select id="filterKlient" onchange="renderOmbor()">
-        <option value="">Barchasi</option>
-      </select>
+      <div class="total-row" id="omborTotals">
+        <span>Umumiy son: <strong id="totalQuantity">0</strong> dona</span>
+        <span>Umumiy qiymat: <strong id="totalValue">0</strong> so‘m</span>
+      </div>
 
-      <label>Mato turi: </label>
-      <select id="filterMato" onchange="renderOmbor()">
-        <option value="">Barchasi</option>
-      </select>
+      <!-- Modal oynasi -->
+      <div id="addItemModal" class="modal hidden">
+        <div class="modal-content">
+          <span class="close" id="closeModal">&times;</span>
+          <h2>Mahsulot qo‘shish</h2>
 
-      <button onclick="applyOmborFilter()">Filtrlash</button>
-      <button onclick="clearOmborFilter()">Tozalash</button>
-    </div>
+          <label>Model nomi:</label>
+          <input type="text" id="modelName" placeholder="Masalan: Sport T-shirt">
 
-    <!-- Sahifalar -->
-    <section id="ombor" class="page active"></section>
+          <label>Kategoriya:</label>
+          <select id="itemCategory">
+            <option value="Futbolka">Futbolka</option>
+            <option value="Hoodie">Hoodie</option>
+            <option value="Kurtka">Kurtka</option>
+          </select>
+
+          <label>O‘lcham:</label>
+          <input type="text" id="size" placeholder="Masalan: M, L, XL">
+
+          <label>Rang:</label>
+          <input type="text" id="color" placeholder="Masalan: Qora">
+
+          <label>Soni (dona):</label>
+          <input type="number" id="quantity" placeholder="Masalan: 100">
+
+          <label>Narx (so‘m):</label>
+          <input type="number" id="price" placeholder="Masalan: 150000">
+
+          <button id="saveItemBtn">Saqlash</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Bo‘sh sahifalar ===== -->
     <section id="buyurtma" class="page hidden"></section>
     <section id="bichuv" class="page hidden"></section>
     <section id="kirim" class="page hidden"></section>
@@ -67,6 +116,7 @@
     <section id="narx" class="page hidden"></section>
   </div>
 
+  <!-- JS fayl -->
   <script src="app.js"></script>
 </body>
 </html>
